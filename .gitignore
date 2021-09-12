@@ -19,6 +19,7 @@
 !/home/isucon/
 /home/isucon/go/
 /home/isucon/local/
+/home/isucon/pprof/
 /home/isucon/.*
 
 !/result/
