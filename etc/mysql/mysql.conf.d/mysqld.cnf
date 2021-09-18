@@ -52,6 +52,18 @@ slow_query_log = 1
 slow_query_log_file = /var/log/mysql/mysql-slow.log
 long_query_time = 0
 
+innodb_log_file_size = 32M
+innodb_doublewrite = 0
+innodb_flush_log_at_trx_commit = 0
+innodb_flush_log_at_timeout = 3
+
+innodb_log_group_home_dir = /dev/shm
+
+#innodb_io_capcity = 3000
+#innodb_io_capcity_max = 3000
+
+#skip-name-resolve = 1
+disable-log-bin
 
 #
 # * Logging and Replication
