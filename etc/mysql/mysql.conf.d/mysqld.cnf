@@ -47,7 +47,10 @@ myisam-recover-options  = BACKUP
 
 # table_open_cache       = 4000
 
-performance_schema = 1
+#performance_schema = 1
+slow_query_log = 1
+slow_query_log_file = /var/log/mysql/mysql-slow.log
+long_query_time = 0
 
 
 #

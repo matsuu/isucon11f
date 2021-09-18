@@ -12,8 +12,8 @@ set -ex
 
 # mysql
 sudo mysql -e "TRUNCATE TABLE performance_schema.events_statements_summary_by_digest"
-#sudo rm -f /var/log/mysql/mysql-slow.log
-#sudo mysqladmin flush-slow-log
+sudo rm -f /var/log/mysql/mysql-slow.log
+sudo mysqladmin flush-logs
 
 # app
 sudo systemctl restart isucholar.go
