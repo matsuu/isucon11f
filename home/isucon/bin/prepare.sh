@@ -20,6 +20,7 @@ sudo ssh isu3 mysqladmin flush-logs
 
 # app
 sudo systemctl restart isucholar.go
+sudo ssh isu2 systemctl restart isucholar.go
 
 # nginx
 sudo rm -f /var/log/nginx/access.log

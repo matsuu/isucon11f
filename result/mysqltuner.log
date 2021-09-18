@@ -38,7 +38,7 @@
  
 -------- Storage Engine Statistics -----------------------------------------------------------------
 [--] Status: +ARCHIVE +BLACKHOLE +CSV -FEDERATED +InnoDB +MEMORY +MRG_MYISAM +MyISAM +PERFORMANCE_SCHEMA 
-[--] Data in InnoDB tables: 17.6M (Tables: 9)
+[--] Data in InnoDB tables: 18.8M (Tables: 9)
 [OK] Total fragmented tables: 0
  
 -------- Analysis Performance Metrics --------------------------------------------------------------
@@ -52,8 +52,8 @@
 [--] Skipped due to --cvefile option undefined
  
 -------- Performance Metrics -----------------------------------------------------------------------
-[--] Up for: 3m 54s (455K q [1K qps], 218 conn, TX: 148M, RX: 67M)
-[--] Reads / Writes: 76% / 24%
+[--] Up for: 18m 57s (2M q [2K qps], 988 conn, TX: 726M, RX: 337M)
+[--] Reads / Writes: 75% / 25%
 [--] Binary logging is disabled
 [--] Physical Memory     : 1.9G
 [--] Max MySQL memory    : 32.0G
@@ -61,21 +61,21 @@
 [--] Total buffers: 176.0M global + 65.1M per thread (500 max threads)
 [--] P_S Max memory usage: 72B
 [--] Galera GCache Max memory usage: 0B
-[!!] Maximum reached memory usage: 13.2G (701.82% of installed RAM)
+[!!] Maximum reached memory usage: 25.9G (1380.89% of installed RAM)
 [!!] Maximum possible memory usage: 32.0G (1706.84% of installed RAM)
 [!!] Overall possible memory usage with other process exceeded memory
-[!!] Slow queries: 99% (455K/455K)
-[OK] Highest usage of available connections: 40% (204/500)
-[OK] Aborted connections: 0.00%  (0/218)
+[!!] Slow queries: 99% (2M/2M)
+[OK] Highest usage of available connections: 80% (404/500)
+[OK] Aborted connections: 0.00%  (0/988)
 [--] Query cache have been removed in MySQL 8
-[OK] Sorts requiring temporary tables: 2% (192 temp sorts / 7K sorts)
-[!!] Joins performed without indexes: 2
-[OK] Temporary tables created on disk: 0% (0 on disk / 29K total)
-[!!] Thread cache hit rate: 6% (204 created / 218 connections)
-[OK] Table cache hit rate: 99% (517K hits / 518K requests)
+[OK] Sorts requiring temporary tables: 2% (829 temp sorts / 41K sorts)
+[!!] Joins performed without indexes: 4
+[OK] Temporary tables created on disk: 0% (0 on disk / 142K total)
+[OK] Thread cache hit rate: 58% (407 created / 988 connections)
+[OK] Table cache hit rate: 99% (2M hits / 2M requests)
 [OK] table_definition_cache(2000) is upper than number of tables(335)
 [OK] Open file limit used: 0% (1/10K)
-[OK] Table locks acquired immediately: 100% (7 immediate / 7 locks)
+[OK] Table locks acquired immediately: 100% (11 immediate / 11 locks)
  
 -------- Performance schema ------------------------------------------------------------------------
 [--] Memory used by P_S: 72B
@@ -91,14 +91,14 @@
 [--] InnoDB is enabled.
 [--] InnoDB Thread Concurrency: 0
 [OK] InnoDB File per table is activated
-[OK] InnoDB buffer pool / data size: 128.0M/17.6M
+[OK] InnoDB buffer pool / data size: 128.0M/18.8M
 [!!] Ratio InnoDB log file size / InnoDB Buffer pool size (50 %): 32.0M * 2/128.0M should be equal to 25%
 [OK] InnoDB buffer pool instances: 1
 [--] Number of InnoDB Buffer Pool Chunk : 1 for 1 Buffer Pool Instance(s)
 [OK] Innodb_buffer_pool_size aligned with Innodb_buffer_pool_chunk_size & Innodb_buffer_pool_instances
-[OK] InnoDB Read buffer efficiency: 99.99% (23526111 hits/ 23528526 total)
-[!!] InnoDB Write Log efficiency: 87.86% (408063 hits/ 464458 total)
-[OK] InnoDB log waits: 0.00% (0 waits / 56395 writes)
+[OK] InnoDB Read buffer efficiency: 100.00% (120807410 hits/ 120809845 total)
+[!!] InnoDB Write Log efficiency: 86.97% (2077583 hits/ 2388812 total)
+[OK] InnoDB log waits: 0.00% (0 waits / 311229 writes)
  
 -------- Aria Metrics ------------------------------------------------------------------------------
 [--] Aria Storage Engine not available.
@@ -136,5 +136,4 @@ Variables to adjust:
   *** MySQL's maximum memory usage is dangerously high ***
   *** Add RAM before increasing MySQL buffer variables ***
     join_buffer_size (> 256.0K, or always use indexes with JOINs)
-    thread_cache_size (> 200)
     innodb_log_file_size should be (=16M) if possible, so InnoDB total log files size equals to 25% of buffer pool size.
