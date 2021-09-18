@@ -122,6 +122,19 @@ func (h *handlers) Initialize(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
+	if _, err := h.DB.Exec("DROP TABLE IF EXISTS users_total_score"); err != nil {
+		c.Logger().Error(err)
+		return c.NoContent(http.StatusInternalServerError)
+	}
+	if _, err := h.DB.Exec("CREATE TABLE users_total_score (user_id CHAR(26) PRIMARY KEY, `code` CHAR(6) UNIQUE NOT NULL, `type`            ENUM ('student', 'teacher') NOT NULL, total_score INT UNSIGNED)"); err != nil {
+		c.Logger().Error(err)
+		return c.NoContent(http.StatusInternalServerError)
+	}
+	if _, err := h.DB.Exec("INSERT INTO users_total_score (user_id,`code`,`type`) SELECT id,`code`,`type` FROM users"); err != nil {
+		c.Logger().Error(err)
+		return c.NoContent(http.StatusInternalServerError)
+	}
+
 	res := InitializeResponse{
 		Language: "go",
 	}
@@ -666,22 +679,9 @@ func (h *handlers) GetGrades(c echo.Context) error {
 	// GPAの統計値
 	// 一つでも修了した科目がある学生のGPA一覧
 	var gpas []float64
-	query = "SELECT IFNULL(SUM(`submissions`.`score` * `courses`.`credit`), 0) / 100 / `credits`.`credits` AS `gpa`" +
-		" FROM `users`" +
-		" JOIN (" +
-		"     SELECT `users`.`id` AS `user_id`, SUM(`courses`.`credit`) AS `credits`" +
-		"     FROM `users`" +
-		"     JOIN `registrations` ON `users`.`id` = `registrations`.`user_id`" +
-		"     JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` AND `courses`.`status` = ?" +
-		"     GROUP BY `users`.`id`" +
-		" ) AS `credits` ON `credits`.`user_id` = `users`.`id`" +
-		" JOIN `registrations` ON `users`.`id` = `registrations`.`user_id`" +
-		" JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` AND `courses`.`status` = ?" +
-		" LEFT JOIN `classes` ON `courses`.`id` = `classes`.`course_id`" +
-		" LEFT JOIN `submissions` ON `users`.`id` = `submissions`.`user_id` AND `submissions`.`class_id` = `classes`.`id`" +
-		" WHERE `users`.`type` = ?" +
-		" GROUP BY `users`.`id`"
-	if err := h.DB.Select(&gpas, query, StatusClosed, StatusClosed, Student); err != nil {
+	// query = "SELECT users.total_score / 100 / (SELECT SUM(`courses`.`credit`) FROM `registrations` JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` AND `courses`.`status` = ? WHERE registrations.user_id = users.id) AS `gpa` FROM `users` WHERE `users`.`type` = ? AND users.total_score IS NOT NULL"
+	query = "SELECT users_total_score.total_score / 100 / `credits`.`credits` AS `gpa` FROM users_total_score JOIN (     SELECT `users`.`id` AS `user_id`, SUM(`courses`.`credit`) AS `credits`     FROM `users`     JOIN `registrations` ON `users`.`id` = `registrations`.`user_id`     JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` AND `courses`.`status` = ? GROUP BY `users`.`id` ) AS `credits` ON `credits`.`user_id` = `users_total_score`.`user_id` WHERE `users_total_score`.`type` = ? AND users_total_score.total_score IS NOT NULL"
+	if err := h.DB.Select(&gpas, query, StatusClosed, Student); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
@@ -930,6 +930,30 @@ func (h *handlers) SetCourseStatus(c echo.Context) error {
 	if count == 0 {
 		return c.String(http.StatusNotFound, "No such course.")
 	}
+	if req.Status == StatusClosed {
+
+		query := "SELECT users.id, SUM(submissions.score * courses.credit) FROM users" +
+			" JOIN `registrations` ON `users`.`id` = `registrations`.`user_id`" +
+			" JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` AND `courses`.`status` = ?" +
+			" LEFT JOIN `classes` ON `courses`.`id` = `classes`.`course_id`" +
+			" LEFT JOIN `submissions` ON `users`.`id` = `submissions`.`user_id` AND `submissions`.`class_id` = `classes`.`id`" +
+			" WHERE courses.id = ? GROUP BY users.id"
+		rows, err := h.DB.Queryx(query, StatusClosed, courseID)
+		if err != nil {
+			c.Logger().Error(err)
+			return c.NoContent(http.StatusInternalServerError)
+		}
+		for rows.Next() {
+			var userID string
+			var score int
+			rows.Scan(&userID, &score)
+			if _, err := h.DB.Exec("UPDATE users_total_score SET total_score = IFNULL(total_score,0) + ? WHERE user_id = ?", score, userID); err != nil {
+				c.Logger().Error(err)
+				return c.NoContent(http.StatusInternalServerError)
+			}
+		}
+		rows.Close()
+	}
 
 	return c.NoContent(http.StatusOK)
 }
@@ -1160,7 +1184,18 @@ func (h *handlers) RegisterScores(c echo.Context) error {
 	defer tx.Rollback()
 
 	var submissionClosed bool
-	if err := tx.Get(&submissionClosed, "SELECT `submission_closed` FROM `classes` WHERE `id` = ? FOR SHARE", classID); err != nil && err != sql.ErrNoRows {
+	var courseID string
+	// if err := tx.Get(&submissionClosed, "SELECT `submission_closed`, CO.credit FROM `classes` CL JOIN `courses` CO ON CL.course_id = CO.id WHERE CL.`id` = ? FOR SHARE", classID); err != nil && err != sql.ErrNoRows {
+	// if err := tx.Get(&submissionClosed, "SELECT `submission_closed` FROM `classes` CL WHERE CL.`id` = ? FOR SHARE", classID); err != nil && err != sql.ErrNoRows {
+	if err := tx.QueryRowx("SELECT `submission_closed`, course_id FROM `classes` WHERE `id` = ? FOR SHARE", classID).Scan(&submissionClosed, &courseID); err != nil && err != sql.ErrNoRows {
+		c.Logger().Error(err)
+		return c.NoContent(http.StatusInternalServerError)
+	} else if err == sql.ErrNoRows {
+		return c.String(http.StatusNotFound, "No such class.")
+	}
+
+	var credit int
+	if err := tx.Get(&credit, "SELECT credit FROM `courses` WHERE `id` = ?", courseID); err != nil && err != sql.ErrNoRows {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	} else if err == sql.ErrNoRows {

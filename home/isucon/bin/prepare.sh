@@ -8,7 +8,7 @@ set -ex
 
 for s in isu2 isu3 ; do
   sudo rsync -av --delete /home/isucon/bin/ $s:/home/isucon/bin/
-  sudo rsync -av --delete /home/isucon/webapp/ $s:/home/isucon/webapp/
+  sudo rsync -av --delete --exclude "assignments/" /home/isucon/webapp/ $s:/home/isucon/webapp/
   sudo rsync -av --delete /home/isucon/env.sh $s:/home/isucon/env.sh
   sudo rsync -av --delete /etc/mysql/ $s:/etc/mysql/
 done
