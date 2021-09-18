@@ -53,8 +53,8 @@
 [--] Skipped due to --cvefile option undefined
  
 -------- Performance Metrics -----------------------------------------------------------------------
-[--] Up for: 2m 31s (235K q [1K qps], 137 conn, TX: 54M, RX: 31M)
-[--] Reads / Writes: 75% / 25%
+[--] Up for: 13m 6s (463K q [589.968 qps], 322 conn, TX: 112M, RX: 63M)
+[--] Reads / Writes: 76% / 24%
 [--] Binary logging is enabled (GTID MODE: OFF)
 [--] Physical Memory     : 1.9G
 [--] Max MySQL memory    : 9.8G
@@ -65,20 +65,20 @@
 [OK] Maximum reached memory usage: 1.4G (73.68% of installed RAM)
 [!!] Maximum possible memory usage: 9.8G (521.87% of installed RAM)
 [!!] Overall possible memory usage with other process exceeded memory
-[!!] Slow queries: 99% (235K/235K)
+[!!] Slow queries: 99% (463K/463K)
 [OK] Highest usage of available connections: 12% (19/151)
-[OK] Aborted connections: 0.00%  (0/137)
+[OK] Aborted connections: 0.00%  (0/322)
 [!!] name resolution is active : a reverse name resolution is made for each new connection and can reduce performance
 [--] Query cache have been removed in MySQL 8
-[OK] Sorts requiring temporary tables: 1% (18 temp sorts / 1K sorts)
-[OK] No joins without indexes
-[OK] Temporary tables created on disk: 0% (0 on disk / 10K total)
-[OK] Thread cache hit rate: 85% (20 created / 137 connections)
-[OK] Table cache hit rate: 99% (232K hits / 232K requests)
+[OK] Sorts requiring temporary tables: 1% (47 temp sorts / 3K sorts)
+[!!] Joins performed without indexes: 3
+[OK] Temporary tables created on disk: 0% (0 on disk / 22K total)
+[OK] Thread cache hit rate: 92% (24 created / 322 connections)
+[OK] Table cache hit rate: 99% (483K hits / 484K requests)
 [OK] table_definition_cache(2000) is upper than number of tables(334)
 [OK] Open file limit used: 0% (5/10K)
-[OK] Table locks acquired immediately: 100% (5 immediate / 5 locks)
-[OK] Binlog cache memory access: 99.99% (22717 Memory / 22719 Total)
+[OK] Table locks acquired immediately: 100% (10 immediate / 10 locks)
+[OK] Binlog cache memory access: 99.99% (46227 Memory / 46231 Total)
  
 -------- Performance schema ------------------------------------------------------------------------
 [--] Memory used by P_S: 72B
@@ -99,9 +99,9 @@
 [OK] InnoDB buffer pool instances: 1
 [--] Number of InnoDB Buffer Pool Chunk : 1 for 1 Buffer Pool Instance(s)
 [OK] Innodb_buffer_pool_size aligned with Innodb_buffer_pool_chunk_size & Innodb_buffer_pool_instances
-[OK] InnoDB Read buffer efficiency: 99.98% (5670871 hits/ 5671962 total)
-[!!] InnoDB Write Log efficiency: 73.24% (172862 hits/ 236007 total)
-[OK] InnoDB log waits: 0.00% (0 waits / 63145 writes)
+[OK] InnoDB Read buffer efficiency: 99.99% (12786875 hits/ 12787990 total)
+[!!] InnoDB Write Log efficiency: 73.48% (352116 hits/ 479199 total)
+[OK] InnoDB log waits: 0.00% (0 waits / 127083 writes)
  
 -------- Aria Metrics ------------------------------------------------------------------------------
 [--] Aria Storage Engine not available.
@@ -132,8 +132,12 @@ General recommendations:
     Reduce your overall MySQL memory footprint for system stability
     Dedicate this server to your database for highest performance.
     Configure your accounts with ip or subnets only, then update your configuration with skip-name-resolve=1
+    We will suggest raising the 'join_buffer_size' until JOINs not using indexes are found.
+             See https://dev.mysql.com/doc/internals/en/join-buffer-size.html
+             (specially the conclusions at the bottom of the page).
     Before changing innodb_log_file_size and/or innodb_log_files_in_group read this: https://bit.ly/2TcGgtU
 Variables to adjust:
   *** MySQL's maximum memory usage is dangerously high ***
   *** Add RAM before increasing MySQL buffer variables ***
+    join_buffer_size (> 256.0K, or always use indexes with JOINs)
     innodb_log_file_size should be (=16M) if possible, so InnoDB total log files size equals to 25% of buffer pool size.
