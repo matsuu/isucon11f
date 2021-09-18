@@ -40,7 +40,7 @@ func main() {
 	e.Server.Addr = fmt.Sprintf(":%v", GetEnv("PORT", "7000"))
 	e.HideBanner = true
 
-	e.Use(middleware.Logger())
+	// e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte("trapnomura"))))
 
@@ -489,7 +489,7 @@ func (h *handlers) RegisterCourses(c echo.Context) error {
 		}
 	}
 
-	if err = tx.Commit(); err != nil {
+	if _, err := tx.Exec("COMMIT /* RegisterCourses */"); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
@@ -1037,7 +1037,7 @@ func (h *handlers) AddClass(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	if err := tx.Commit(); err != nil {
+	if _, err := tx.Exec("COMMIT /* AddClasses */"); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
@@ -1117,7 +1117,7 @@ func (h *handlers) SubmitAssignment(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	if err := tx.Commit(); err != nil {
+	if _, err := tx.Exec("COMMIT /* SubmitAssignment */"); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
