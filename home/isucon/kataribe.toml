@@ -3,7 +3,7 @@
 ################################################################################
 
 # Top Ranking Group By Request
-ranking_count = 20
+ranking_count = 50
 
 # Top Slow Requests
 slow_count = 37
@@ -18,7 +18,7 @@ show_status_code = true
 show_bytes = true
 
 # Percentiles
-percentiles = [ 50.0, 90.0, 95.0, 99.0 ]
+percentiles = [ 50.0, 99.0, 99.9 ]
 
 ################################################################################
 # Scale
@@ -55,11 +55,11 @@ effective_digit = 3
 # H2O example: "%h %l %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\" %{duration}x"
 # Varnishncsa example: '%h %l %u %t "%r" %s %b "%{Referer}i" "%{User-agent}i" %D'
 #
-log_format = '^([^ ]+) ([^ ]+) ([^ ]+) \[([^\]]+)\] "((?:\\"|[^"])*)" (\d+) (\d+|-) "((?:\\"|[^"])*)" "((?:\\"|[^"])*)" ([0-9.]+)$'
+log_format = '^([^ ]+) ([^ ]+) ([^ ]+) \[([^\]]+)\] "((?:\\"|[^"])*)" (\d+) (\d+|-) "((?:\\"|[^"])*)" "((?:\\"|[^"])*)" "((?:\\"|[^"])*)" ([0-9.]+)$'
 request_index = 5
 status_index = 6
 bytes_index = 7
-duration_index = 10
+duration_index = 11
 
 #
 # Envoy example: use default format
@@ -107,13 +107,25 @@ duration_index = 10
 # You can replace the part of urls which matched to your regular expressions.
 # For overview of regexp syntax: https://golang.org/pkg/regexp/syntax/
 #
-#[[replace]]
-#regexp = '/[0-9]+(/|\s)'
-#replace = '/<num>$1'
+[[replace]]
+regexp = 'courses/[0-9A-Z]+/'
+replace = 'courses/<course_id>/'
+
+[[replace]]
+regexp = 'courses/[0-9A-Z]+ '
+replace = 'courses/<course_id> '
+
+[[replace]]
+regexp = 'announcements/[0-9A-Z]+ '
+replace = 'announcements/<ann_id> '
+
+[[replace]]
+regexp = 'classes/[0-9A-Z]+/'
+replace = 'classes/<class_id>/'
 #
-#[[replace]]
-#regexp = '=[0-9]+(&|\s)'
-#replace = '=<num>$1'
+[[replace]]
+regexp = '=[^& ]*(&|\s)'
+replace = '=*$1'
 #
 #[[replace]]
 #regexp = '\s+HTTP/[0-9.]+$'
