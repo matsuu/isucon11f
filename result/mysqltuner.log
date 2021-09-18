@@ -37,7 +37,7 @@
  
 -------- Storage Engine Statistics -----------------------------------------------------------------
 [--] Status: +ARCHIVE +BLACKHOLE +CSV -FEDERATED +InnoDB +MEMORY +MRG_MYISAM +MyISAM +PERFORMANCE_SCHEMA 
-[--] Data in InnoDB tables: 9.7M (Tables: 8)
+[--] Data in InnoDB tables: 10.6M (Tables: 8)
 [OK] Total fragmented tables: 0
  
 -------- Analysis Performance Metrics --------------------------------------------------------------
@@ -51,8 +51,8 @@
 [--] Skipped due to --cvefile option undefined
  
 -------- Performance Metrics -----------------------------------------------------------------------
-[--] Up for: 17m 40s (243K q [230.186 qps], 182 conn, TX: 91M, RX: 37M)
-[--] Reads / Writes: 77% / 23%
+[--] Up for: 22m 31s (495K q [366.674 qps], 323 conn, TX: 151M, RX: 70M)
+[--] Reads / Writes: 76% / 24%
 [--] Binary logging is enabled (GTID MODE: OFF)
 [--] Physical Memory     : 1.9G
 [--] Max MySQL memory    : 9.8G
@@ -60,23 +60,23 @@
 [--] Total buffers: 176.0M global + 65.1M per thread (151 max threads)
 [--] P_S Max memory usage: 72B
 [--] Galera GCache Max memory usage: 0B
-[OK] Maximum reached memory usage: 957.8M (49.92% of installed RAM)
+[OK] Maximum reached memory usage: 1022.9M (53.31% of installed RAM)
 [!!] Maximum possible memory usage: 9.8G (521.87% of installed RAM)
 [!!] Overall possible memory usage with other process exceeded memory
-[OK] Slow queries: 0% (0/243K)
-[OK] Highest usage of available connections: 7% (12/151)
-[OK] Aborted connections: 2.20%  (4/182)
+[OK] Slow queries: 0% (0/495K)
+[OK] Highest usage of available connections: 8% (13/151)
+[OK] Aborted connections: 1.24%  (4/323)
 [!!] name resolution is active : a reverse name resolution is made for each new connection and can reduce performance
 [--] Query cache have been removed in MySQL 8
-[OK] Sorts requiring temporary tables: 0% (20 temp sorts / 2K sorts)
-[!!] Joins performed without indexes: 6
-[OK] Temporary tables created on disk: 0% (0 on disk / 11K total)
-[OK] Thread cache hit rate: 93% (12 created / 182 connections)
-[OK] Table cache hit rate: 99% (504K hits / 505K requests)
+[OK] Sorts requiring temporary tables: 0% (20 temp sorts / 3K sorts)
+[!!] Joins performed without indexes: 8
+[OK] Temporary tables created on disk: 0% (0 on disk / 23K total)
+[OK] Thread cache hit rate: 95% (16 created / 323 connections)
+[OK] Table cache hit rate: 99% (747K hits / 748K requests)
 [OK] table_definition_cache(2000) is upper than number of tables(334)
 [OK] Open file limit used: 0% (8/10K)
-[OK] Table locks acquired immediately: 100% (16 immediate / 16 locks)
-[OK] Binlog cache memory access: 99.99% (22318 Memory / 22320 Total)
+[OK] Table locks acquired immediately: 100% (22 immediate / 22 locks)
+[OK] Binlog cache memory access: 99.99% (46739 Memory / 46743 Total)
  
 -------- Performance schema ------------------------------------------------------------------------
 [--] Memory used by P_S: 72B
@@ -92,14 +92,14 @@
 [--] InnoDB is enabled.
 [--] InnoDB Thread Concurrency: 0
 [OK] InnoDB File per table is activated
-[OK] InnoDB buffer pool / data size: 128.0M/9.7M
+[OK] InnoDB buffer pool / data size: 128.0M/10.6M
 [!!] Ratio InnoDB log file size / InnoDB Buffer pool size (75 %): 48.0M * 2/128.0M should be equal to 25%
 [OK] InnoDB buffer pool instances: 1
 [--] Number of InnoDB Buffer Pool Chunk : 1 for 1 Buffer Pool Instance(s)
 [OK] Innodb_buffer_pool_size aligned with Innodb_buffer_pool_chunk_size & Innodb_buffer_pool_instances
-[OK] InnoDB Read buffer efficiency: 99.99% (6756973 hits/ 6757890 total)
-[!!] InnoDB Write Log efficiency: 73.18% (170379 hits/ 232832 total)
-[OK] InnoDB log waits: 0.00% (0 waits / 62453 writes)
+[OK] InnoDB Read buffer efficiency: 99.99% (12260549 hits/ 12261469 total)
+[!!] InnoDB Write Log efficiency: 73.95% (356458 hits/ 482034 total)
+[OK] InnoDB log waits: 0.00% (0 waits / 125576 writes)
  
 -------- Aria Metrics ------------------------------------------------------------------------------
 [--] Aria Storage Engine not available.

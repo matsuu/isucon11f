@@ -3,7 +3,7 @@ set -ex
 
 (
   cd /home/isucon/webapp/go
-  go build
+  make
 )
 
 # sudo rsync -av --delete isu2:/home/isucon/webapp/ /home/isucon/webapp/
