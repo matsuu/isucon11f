@@ -533,11 +533,11 @@ type CourseResult struct {
 }
 
 type ClassScore struct {
-	ClassID    string `json:"class_id"`
-	Title      string `json:"title"`
-	Part       uint8  `json:"part"`
-	Score      *int   `json:"score"`      // 0~100点
-	Submitters int    `json:"submitters"` // 提出した学生数
+	ClassID    string `db:"id" json:"class_id"`
+	Title      string `db:"title" json:"title"`
+	Part       uint8  `db:"part" json:"part"`
+	Score      *int   `db:"score" json:"score"`           // 0~100点
+	Submitters int    `db:"submitters" json:"submitters"` // 提出した学生数
 }
 
 // GetGrades GET /api/users/me/grades 成績取得
@@ -565,50 +565,67 @@ func (h *handlers) GetGrades(c echo.Context) error {
 	myCredits := 0
 	for _, course := range registeredCourses {
 		// 講義一覧の取得
-		var classes []Class
-		query = "SELECT *" +
-			" FROM `classes`" +
-			" WHERE `course_id` = ?" +
-			" ORDER BY `part` DESC"
-		if err := h.DB.Select(&classes, query, course.ID); err != nil {
+		// 講義毎の成績計算処理
+		var classScores []ClassScore
+		query = "SELECT C.id, C.title, C.part, (SELECT COUNT(class_id) FROM `submissions` S2 WHERE C.id = S2.class_id) AS submitters, S.score" +
+			" FROM `classes` C" +
+			" LEFT JOIN `submissions` S ON C.id = S.class_id AND S.user_id = ?" +
+			" WHERE C.`course_id` = ?" +
+			" ORDER BY C.`part` DESC"
+		rows, err := h.DB.Queryx(query, userID, course.ID)
+		if err != nil {
 			c.Logger().Error(err)
 			return c.NoContent(http.StatusInternalServerError)
 		}
-
-		// 講義毎の成績計算処理
-		classScores := make([]ClassScore, 0, len(classes))
 		var myTotalScore int
-		for _, class := range classes {
-			var submissionsCount int
-			if err := h.DB.Get(&submissionsCount, "SELECT COUNT(*) FROM `submissions` WHERE `class_id` = ?", class.ID); err != nil {
+		for rows.Next() {
+			var classScore ClassScore
+			err := rows.StructScan(&classScore)
+			if err != nil {
 				c.Logger().Error(err)
 				return c.NoContent(http.StatusInternalServerError)
 			}
-
-			var myScore sql.NullInt64
-			if err := h.DB.Get(&myScore, "SELECT `submissions`.`score` FROM `submissions` WHERE `user_id` = ? AND `class_id` = ?", userID, class.ID); err != nil && err != sql.ErrNoRows {
-				c.Logger().Error(err)
-				return c.NoContent(http.StatusInternalServerError)
-			} else if err == sql.ErrNoRows || !myScore.Valid {
-				classScores = append(classScores, ClassScore{
-					ClassID:    class.ID,
-					Part:       class.Part,
-					Title:      class.Title,
-					Score:      nil,
-					Submitters: submissionsCount,
-				})
-			} else {
-				score := int(myScore.Int64)
-				myTotalScore += score
-				classScores = append(classScores, ClassScore{
-					ClassID:    class.ID,
-					Part:       class.Part,
-					Title:      class.Title,
-					Score:      &score,
-					Submitters: submissionsCount,
-				})
+			if classScore.Score != nil {
+				myTotalScore += *classScore.Score
 			}
+			classScores = append(classScores, classScore)
 		}
+		rows.Close()
+
+		/*
+			var myTotalScore int
+			for _, class := range classes {
+				var submissionsCount int
+				if err := h.DB.Get(&submissionsCount, "SELECT COUNT(*) FROM `submissions` WHERE `class_id` = ?", class.ID); err != nil {
+					c.Logger().Error(err)
+					return c.NoContent(http.StatusInternalServerError)
+				}
+
+				var myScore sql.NullInt64
+				if err := h.DB.Get(&myScore, "SELECT `submissions`.`score` FROM `submissions` WHERE `user_id` = ? AND `class_id` = ?", userID, class.ID); err != nil && err != sql.ErrNoRows {
+					c.Logger().Error(err)
+					return c.NoContent(http.StatusInternalServerError)
+				} else if err == sql.ErrNoRows || !myScore.Valid {
+					classScores = append(classScores, ClassScore{
+						ClassID:    class.ID,
+						Part:       class.Part,
+						Title:      class.Title,
+						Score:      nil,
+						Submitters: submissionsCount,
+					})
+				} else {
+					score := int(myScore.Int64)
+					myTotalScore += score
+					classScores = append(classScores, ClassScore{
+						ClassID:    class.ID,
+						Part:       class.Part,
+						Title:      class.Title,
+						Score:      &score,
+						Submitters: submissionsCount,
+					})
+				}
+			}
+		*/
 
 		// この科目を履修している学生のTotalScore一覧を取得
 		var totals []int
