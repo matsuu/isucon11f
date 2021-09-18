@@ -1,0 +1,141 @@
+ >>  MySQLTuner 1.8.1 - Major Hayden <major@mhtx.net>
+ >>  Bug reports, feature requests, and downloads at http://mysqltuner.pl/
+ >>  Run with '--help' for additional options and output filtering
+
+[--] Skipped version check for MySQLTuner script
+[OK] Logged in using credentials from Debian maintenance account.
+[OK] Currently running supported MySQL version 8.0.26-0ubuntu0.20.04.2
+[OK] Operating on 64-bit architecture
+ 
+-------- Log file Recommendations ------------------------------------------------------------------
+[OK] Log file /var/log/mysql/error.log exists
+[--] Log file: /var/log/mysql/error.log(12K)
+[OK] Log file /var/log/mysql/error.log is not empty
+[OK] Log file /var/log/mysql/error.log is smaller than 32 Mb
+[OK] Log file /var/log/mysql/error.log is readable.
+[!!] /var/log/mysql/error.log contains 29 warning(s).
+[!!] /var/log/mysql/error.log contains 3 error(s).
+[--] 14 start(s) detected in /var/log/mysql/error.log
+[--] 1) 2021-09-18T01:13:26.758194Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.26-0ubuntu0.20.04.2'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu).
+[--] 2) 2021-09-18T01:13:26.758124Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '127.0.0.1' port: 33060, socket: /var/run/mysqld/mysqlx.sock
+[--] 3) 2021-09-17T11:57:41.852562Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.26-0ubuntu0.20.04.2'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu).
+[--] 4) 2021-09-17T11:57:41.852492Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '127.0.0.1' port: 33060, socket: /var/run/mysqld/mysqlx.sock
+[--] 5) 2021-09-17T10:49:16.478411Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.26-0ubuntu0.20.04.2'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu).
+[--] 6) 2021-09-17T10:49:16.478334Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '127.0.0.1' port: 33060, socket: /var/run/mysqld/mysqlx.sock
+[--] 7) 2021-09-17T09:11:20.412219Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.26-0ubuntu0.20.04.2'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu).
+[--] 8) 2021-09-17T09:11:20.412155Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '127.0.0.1' port: 33060, socket: /var/run/mysqld/mysqlx.sock
+[--] 9) 2021-09-17T08:08:20.965666Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.26-0ubuntu0.20.04.2'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu).
+[--] 10) 2021-09-17T08:08:20.965583Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '127.0.0.1' port: 33060, socket: /var/run/mysqld/mysqlx.sock
+[--] 7 shutdown(s) detected in /var/log/mysql/error.log
+[--] 1) 2021-09-18T01:13:26.090243Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.0.26-0ubuntu0.20.04.2)  (Ubuntu).
+[--] 2) 2021-09-17T11:06:46.936443Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.0.26-0ubuntu0.20.04.2)  (Ubuntu).
+[--] 3) 2021-09-17T10:39:38.948574Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.0.26-0ubuntu0.20.04.2)  (Ubuntu).
+[--] 4) 2021-09-17T08:13:42.432528Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.0.26-0ubuntu0.20.04.2)  (Ubuntu).
+[--] 5) 2021-09-17T08:08:20.317078Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.0.26-0ubuntu0.20.04.2)  (Ubuntu).
+[--] 6) 2021-09-17T08:08:15.635138Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.0.26-0ubuntu0.20.04.2)  (Ubuntu).
+[--] 7) 2021-09-17T08:08:12.803579Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.0.26-0ubuntu0.20.04.2)  (Ubuntu).
+ 
+-------- Storage Engine Statistics -----------------------------------------------------------------
+[--] Status: +ARCHIVE +BLACKHOLE +CSV -FEDERATED +InnoDB +MEMORY +MRG_MYISAM +MyISAM +PERFORMANCE_SCHEMA 
+[--] Data in InnoDB tables: 9.7M (Tables: 8)
+[OK] Total fragmented tables: 0
+ 
+-------- Analysis Performance Metrics --------------------------------------------------------------
+[--] innodb_stats_on_metadata: OFF
+[OK] No stat updates during querying INFORMATION_SCHEMA.
+ 
+-------- Security Recommendations ------------------------------------------------------------------
+[--] Skipped due to unsupported feature for MySQL 8
+ 
+-------- CVE Security Recommendations --------------------------------------------------------------
+[--] Skipped due to --cvefile option undefined
+ 
+-------- Performance Metrics -----------------------------------------------------------------------
+[--] Up for: 8m 42s (243K q [467.153 qps], 152 conn, TX: 91M, RX: 37M)
+[--] Reads / Writes: 77% / 23%
+[--] Binary logging is enabled (GTID MODE: OFF)
+[--] Physical Memory     : 1.9G
+[--] Max MySQL memory    : 9.8G
+[--] Other process memory: 0B
+[--] Total buffers: 176.0M global + 65.1M per thread (151 max threads)
+[--] P_S Max memory usage: 72B
+[--] Galera GCache Max memory usage: 0B
+[OK] Maximum reached memory usage: 957.8M (49.92% of installed RAM)
+[!!] Maximum possible memory usage: 9.8G (521.87% of installed RAM)
+[!!] Overall possible memory usage with other process exceeded memory
+[OK] Slow queries: 0% (0/243K)
+[OK] Highest usage of available connections: 7% (12/151)
+[OK] Aborted connections: 2.63%  (4/152)
+[!!] name resolution is active : a reverse name resolution is made for each new connection and can reduce performance
+[--] Query cache have been removed in MySQL 8
+[OK] Sorts requiring temporary tables: 0% (20 temp sorts / 2K sorts)
+[!!] Joins performed without indexes: 4
+[OK] Temporary tables created on disk: 0% (0 on disk / 11K total)
+[OK] Thread cache hit rate: 92% (12 created / 152 connections)
+[OK] Table cache hit rate: 99% (504K hits / 505K requests)
+[OK] table_definition_cache(2000) is upper than number of tables(334)
+[OK] Open file limit used: 0% (8/10K)
+[OK] Table locks acquired immediately: 100% (11 immediate / 11 locks)
+[OK] Binlog cache memory access: 99.99% (22317 Memory / 22319 Total)
+ 
+-------- Performance schema ------------------------------------------------------------------------
+[--] Memory used by P_S: 72B
+[--] Sys schema is installed.
+ 
+-------- ThreadPool Metrics ------------------------------------------------------------------------
+[--] ThreadPool stat is disabled.
+ 
+-------- MyISAM Metrics ----------------------------------------------------------------------------
+[--] MyISAM Metrics are disabled on last MySQL versions.
+ 
+-------- InnoDB Metrics ----------------------------------------------------------------------------
+[--] InnoDB is enabled.
+[--] InnoDB Thread Concurrency: 0
+[OK] InnoDB File per table is activated
+[OK] InnoDB buffer pool / data size: 128.0M/9.7M
+[!!] Ratio InnoDB log file size / InnoDB Buffer pool size (75 %): 48.0M * 2/128.0M should be equal to 25%
+[OK] InnoDB buffer pool instances: 1
+[--] Number of InnoDB Buffer Pool Chunk : 1 for 1 Buffer Pool Instance(s)
+[OK] Innodb_buffer_pool_size aligned with Innodb_buffer_pool_chunk_size & Innodb_buffer_pool_instances
+[OK] InnoDB Read buffer efficiency: 99.99% (6750646 hits/ 6751563 total)
+[!!] InnoDB Write Log efficiency: 73.18% (170376 hits/ 232823 total)
+[OK] InnoDB log waits: 0.00% (0 waits / 62447 writes)
+ 
+-------- Aria Metrics ------------------------------------------------------------------------------
+[--] Aria Storage Engine not available.
+ 
+-------- TokuDB Metrics ----------------------------------------------------------------------------
+[--] TokuDB is disabled.
+ 
+-------- XtraDB Metrics ----------------------------------------------------------------------------
+[--] XtraDB is disabled.
+ 
+-------- Galera Metrics ----------------------------------------------------------------------------
+[--] Galera is disabled.
+ 
+-------- Replication Metrics -----------------------------------------------------------------------
+[--] Galera Synchronous replication: NO
+[--] No replication slave(s) for this server.
+[--] Binlog format: ROW
+[--] XA support enabled: ON
+[--] Semi synchronous replication Master: Not Activated
+[--] Semi synchronous replication Slave: Not Activated
+[--] This is a standalone server
+ 
+-------- Recommendations ---------------------------------------------------------------------------
+General recommendations:
+    Check warning line(s) in /var/log/mysql/error.log file
+    Check error line(s) in /var/log/mysql/error.log file
+    MySQL was started within the last 24 hours - recommendations may be inaccurate
+    Reduce your overall MySQL memory footprint for system stability
+    Dedicate this server to your database for highest performance.
+    Configure your accounts with ip or subnets only, then update your configuration with skip-name-resolve=1
+    We will suggest raising the 'join_buffer_size' until JOINs not using indexes are found.
+             See https://dev.mysql.com/doc/internals/en/join-buffer-size.html
+             (specially the conclusions at the bottom of the page).
+    Before changing innodb_log_file_size and/or innodb_log_files_in_group read this: https://bit.ly/2TcGgtU
+Variables to adjust:
+  *** MySQL's maximum memory usage is dangerously high ***
+  *** Add RAM before increasing MySQL buffer variables ***
+    join_buffer_size (> 256.0K, or always use indexes with JOINs)
+    innodb_log_file_size should be (=16M) if possible, so InnoDB total log files size equals to 25% of buffer pool size.

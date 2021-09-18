@@ -47,6 +47,9 @@ myisam-recover-options  = BACKUP
 
 # table_open_cache       = 4000
 
+performance_schema = 1
+
+
 #
 # * Logging and Replication
 #
