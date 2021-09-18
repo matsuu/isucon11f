@@ -28,7 +28,7 @@ user		= mysql
 #
 # Instead of skip-networking the default is now to listen only on
 # localhost which is more compatible and is not less secure.
-bind-address		= 127.0.0.1
+bind-address		= 0.0.0.0
 mysqlx-bind-address	= 127.0.0.1
 #
 # * Fine Tuning
@@ -62,7 +62,7 @@ innodb_log_group_home_dir = /dev/shm
 #innodb_io_capcity = 3000
 #innodb_io_capcity_max = 3000
 
-#skip-name-resolve = 1
+skip-name-resolve = 1
 disable-log-bin
 
 #
