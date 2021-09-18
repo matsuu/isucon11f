@@ -126,11 +126,11 @@ func (h *handlers) Initialize(c echo.Context) error {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
-	if _, err := h.DB.Exec("CREATE TABLE users_total_score (user_id CHAR(26) PRIMARY KEY, `code` CHAR(6) UNIQUE NOT NULL, `type`            ENUM ('student', 'teacher') NOT NULL, total_score INT UNSIGNED)"); err != nil {
+	if _, err := h.DB.Exec("CREATE TABLE users_total_score (user_id CHAR(26) PRIMARY KEY, `code` CHAR(6) UNIQUE NOT NULL, total_score INT UNSIGNED, INDEX(total_score))"); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
-	if _, err := h.DB.Exec("INSERT INTO users_total_score (user_id,`code`,`type`) SELECT id,`code`,`type` FROM users"); err != nil {
+	if _, err := h.DB.Exec("INSERT INTO users_total_score (user_id,`code`) SELECT id,`code` FROM users WHERE `type` = 'student'"); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
@@ -680,8 +680,8 @@ func (h *handlers) GetGrades(c echo.Context) error {
 	// 一つでも修了した科目がある学生のGPA一覧
 	var gpas []float64
 	// query = "SELECT users.total_score / 100 / (SELECT SUM(`courses`.`credit`) FROM `registrations` JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` AND `courses`.`status` = ? WHERE registrations.user_id = users.id) AS `gpa` FROM `users` WHERE `users`.`type` = ? AND users.total_score IS NOT NULL"
-	query = "SELECT users_total_score.total_score / 100 / `credits`.`credits` AS `gpa` FROM users_total_score JOIN (     SELECT `users`.`id` AS `user_id`, SUM(`courses`.`credit`) AS `credits`     FROM `users`     JOIN `registrations` ON `users`.`id` = `registrations`.`user_id`     JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` AND `courses`.`status` = ? GROUP BY `users`.`id` ) AS `credits` ON `credits`.`user_id` = `users_total_score`.`user_id` WHERE `users_total_score`.`type` = ? AND users_total_score.total_score IS NOT NULL"
-	if err := h.DB.Select(&gpas, query, StatusClosed, Student); err != nil {
+	query = "SELECT users_total_score.total_score / 100 / `credits`.`credits` AS `gpa` FROM users_total_score JOIN (     SELECT `users`.`id` AS `user_id`, SUM(`courses`.`credit`) AS `credits`     FROM `users`     JOIN `registrations` ON `users`.`id` = `registrations`.`user_id`     JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` AND `courses`.`status` = ? GROUP BY `users`.`id` ) AS `credits` ON `credits`.`user_id` = `users_total_score`.`user_id` WHERE users_total_score.total_score IS NOT NULL"
+	if err := h.DB.Select(&gpas, query, StatusClosed); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
