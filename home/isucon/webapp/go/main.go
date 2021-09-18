@@ -1165,7 +1165,7 @@ func (h *handlers) RegisterScores(c echo.Context) error {
 		}
 	}
 
-	if err := tx.Commit(); err != nil {
+	if _, err := tx.Exec("COMMIT /* RegisterScores */"); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
@@ -1219,7 +1219,7 @@ func (h *handlers) DownloadSubmittedAssignments(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	if err := tx.Commit(); err != nil {
+	if _, err := tx.Exec("COMMIT /* DownloadSubmittedAssignments */"); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
@@ -1326,7 +1326,7 @@ func (h *handlers) GetAnnouncementList(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	if err := tx.Commit(); err != nil {
+	if _, err := tx.Exec("COMMIT /* GetAnnouncementList */"); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
@@ -1441,7 +1441,7 @@ func (h *handlers) AddAnnouncement(c echo.Context) error {
 		}
 	}
 
-	if err := tx.Commit(); err != nil {
+	if _, err := tx.Exec("COMMIT /* AddAnnouncement */"); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
