@@ -21,6 +21,7 @@
 /home/isucon/local/
 /home/isucon/pprof/
 /home/isucon/.*
+/home/isucon/webapp/ruby/.*
 
 !/result/
 
