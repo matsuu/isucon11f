@@ -572,6 +572,20 @@ func (h *handlers) GetGrades(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
+	ch := make(chan []float64)
+	go func() {
+		// GPAの統計値
+		// 一つでも修了した科目がある学生のGPA一覧
+		var gpas []float64
+		// query = "SELECT users.total_score / 100 / (SELECT SUM(`courses`.`credit`) FROM `registrations` JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` AND `courses`.`status` = ? WHERE registrations.user_id = users.id) AS `gpa` FROM `users` WHERE `users`.`type` = ? AND users.total_score IS NOT NULL"
+		query = "SELECT users_total_score.total_score / 100 / `credits`.`credits` AS `gpa` FROM users_total_score JOIN (     SELECT `users`.`id` AS `user_id`, SUM(`courses`.`credit`) AS `credits`     FROM `users`     JOIN `registrations` ON `users`.`id` = `registrations`.`user_id`     JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` AND `courses`.`status` = ? GROUP BY `users`.`id` ) AS `credits` ON `credits`.`user_id` = `users_total_score`.`user_id` WHERE users_total_score.total_score IS NOT NULL"
+		if err := h.DB.Select(&gpas, query, StatusClosed); err != nil {
+			c.Logger().Error(err)
+			// return c.NoContent(http.StatusInternalServerError)
+		}
+		ch <- gpas
+	}()
+
 	// 科目毎の成績計算処理
 	courseResults := make([]CourseResult, 0, len(registeredCourses))
 	myGPA := 0.0
@@ -676,15 +690,7 @@ func (h *handlers) GetGrades(c echo.Context) error {
 		myGPA = myGPA / 100 / float64(myCredits)
 	}
 
-	// GPAの統計値
-	// 一つでも修了した科目がある学生のGPA一覧
-	var gpas []float64
-	// query = "SELECT users.total_score / 100 / (SELECT SUM(`courses`.`credit`) FROM `registrations` JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` AND `courses`.`status` = ? WHERE registrations.user_id = users.id) AS `gpa` FROM `users` WHERE `users`.`type` = ? AND users.total_score IS NOT NULL"
-	query = "SELECT users_total_score.total_score / 100 / `credits`.`credits` AS `gpa` FROM users_total_score JOIN (     SELECT `users`.`id` AS `user_id`, SUM(`courses`.`credit`) AS `credits`     FROM `users`     JOIN `registrations` ON `users`.`id` = `registrations`.`user_id`     JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` AND `courses`.`status` = ? GROUP BY `users`.`id` ) AS `credits` ON `credits`.`user_id` = `users_total_score`.`user_id` WHERE users_total_score.total_score IS NOT NULL"
-	if err := h.DB.Select(&gpas, query, StatusClosed); err != nil {
-		c.Logger().Error(err)
-		return c.NoContent(http.StatusInternalServerError)
-	}
+	gpas := <-ch
 
 	res := GetGradeResponse{
 		Summary: Summary{
@@ -1116,12 +1122,12 @@ func (h *handlers) SubmitAssignment(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "This course is not in progress.")
 	}
 
-	var registrationCount int
-	if err := tx.Get(&registrationCount, "SELECT COUNT(*) FROM `registrations` WHERE `user_id` = ? AND `course_id` = ?", userID, courseID); err != nil {
+	var registrationExists bool
+	if err := tx.Get(&registrationExists, "SELECT EXISTS(SELECT 1 FROM `registrations` WHERE `user_id` = ? AND `course_id` = ?)", userID, courseID); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
-	if registrationCount == 0 {
+	if !registrationExists {
 		return c.String(http.StatusBadRequest, "You have not taken this course.")
 	}
 
