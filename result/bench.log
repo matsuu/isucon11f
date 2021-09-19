@@ -1,0 +1,61 @@
+06:17:27.586539 ===> PREPARE
+06:17:27.586582 start Initialize
+06:17:30.246432 ===> LOAD
+06:17:33.246559 score: 4519 (= 4519 - 0) : passed
+06:17:33.246567 deductionCount: 0, timeoutCount: 0
+06:17:36.247349 score: 10053 (= 10053 - 0) : passed
+06:17:36.247383 deductionCount: 0, timeoutCount: 0
+06:17:39.246912 score: 14693 (= 14693 - 0) : passed
+06:17:39.249206 deductionCount: 0, timeoutCount: 0
+06:17:42.246716 score: 18327 (= 18327 - 0) : passed
+06:17:42.246747 deductionCount: 0, timeoutCount: 0
+06:17:45.246528 score: 23973 (= 23973 - 0) : passed
+06:17:45.246536 deductionCount: 0, timeoutCount: 0
+06:17:48.247993 score: 28894 (= 28894 - 0) : passed
+06:17:48.248027 deductionCount: 0, timeoutCount: 50
+06:17:50.247847 50人の学生が成績取得(GET /api/users/me/grades)でタイムアウトしました。それぞれの学生は10秒後にリトライを試み、その後履修登録を再開します。
+06:17:51.246890 score: 33352 (= 33352 - 0) : passed
+06:17:51.246922 deductionCount: 0, timeoutCount: 50
+06:17:54.246973 score: 38241 (= 38241 - 0) : passed
+06:17:54.246984 deductionCount: 0, timeoutCount: 50
+06:17:57.247104 score: 42231 (= 42231 - 0) : passed
+06:17:57.247138 deductionCount: 0, timeoutCount: 50
+06:18:00.247793 score: 45899 (= 45899 - 0) : passed
+06:18:00.247828 deductionCount: 0, timeoutCount: 50
+06:18:03.248949 score: 49288 (= 49388 - 100) : passed
+06:18:03.248987 deductionCount: 0, timeoutCount: 106
+06:18:05.247337 61人の学生が成績取得(GET /api/users/me/grades)でタイムアウトしました。それぞれの学生は10秒後にリトライを試み、その後履修登録を再開します。
+06:18:06.247937 score: 53584 (= 53684 - 100) : passed
+06:18:06.247962 deductionCount: 0, timeoutCount: 111
+06:18:09.248224 score: 56833 (= 56933 - 100) : passed
+06:18:09.248237 deductionCount: 0, timeoutCount: 116
+06:18:10.247135 5人の学生が成績取得(GET /api/users/me/grades)でタイムアウトしました。それぞれの学生は10秒後にリトライを試み、その後履修登録を再開します。
+06:18:12.248667 score: 59824 (= 59924 - 100) : passed
+06:18:12.248683 deductionCount: 0, timeoutCount: 116
+06:18:15.246632 4人の学生が成績取得(GET /api/users/me/grades)でタイムアウトしました。それぞれの学生は10秒後にリトライを試み、その後履修登録を再開します。
+06:18:15.248597 score: 62813 (= 62913 - 100) : passed
+06:18:15.248622 deductionCount: 0, timeoutCount: 120
+06:18:18.249449 score: 65912 (= 66012 - 100) : passed
+06:18:18.249490 deductionCount: 0, timeoutCount: 180
+06:18:20.246825 65人の学生が成績取得(GET /api/users/me/grades)でタイムアウトしました。それぞれの学生は10秒後にリトライを試み、その後履修登録を再開します。
+06:18:21.248874 score: 69431 (= 69531 - 100) : passed
+06:18:21.249088 deductionCount: 0, timeoutCount: 188
+06:18:24.248736 score: 72800 (= 72900 - 100) : passed
+06:18:24.248786 deductionCount: 0, timeoutCount: 197
+06:18:25.247641 12人の学生が成績取得(GET /api/users/me/grades)でタイムアウトしました。それぞれの学生は10秒後にリトライを試み、その後履修登録を再開します。
+06:18:27.249537 score: 75831 (= 75931 - 100) : passed
+06:18:27.249582 deductionCount: 0, timeoutCount: 197
+06:18:30.252257 score: 78403 (= 78603 - 200) : passed
+06:18:30.252285 deductionCount: 0, timeoutCount: 213
+06:18:33.249663 score: 78489 (= 78689 - 200) : passed
+06:18:33.249686 deductionCount: 0, timeoutCount: 277
+06:18:36.249819 score: 78489 (= 78689 - 200) : passed
+06:18:36.249832 deductionCount: 0, timeoutCount: 282
+06:18:39.250634 score: 78489 (= 78689 - 200) : passed
+06:18:39.250652 deductionCount: 0, timeoutCount: 282
+06:18:40.250944 ===> VALIDATION
+06:18:50.782050 score: 78489 (= 78689 - 200) : passed
+06:18:50.782074 deductionCount: 0, timeoutCount: 282
+06:18:50.782076 raw score (78689) breakdown:
+06:18:50.782082 SubmitAssignment    : 20810 回 (62430 点)
+06:18:50.782083 GetAnnouncementList : 16259 回 (16259 点)

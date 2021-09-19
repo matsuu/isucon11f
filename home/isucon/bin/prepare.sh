@@ -19,4 +19,5 @@ sudo systemctl restart isucholar.go
 sudo rm -f /var/log/nginx/access.log
 sudo systemctl reload nginx
 
-echo "OK"
+# result
+rm -f /result/*.*

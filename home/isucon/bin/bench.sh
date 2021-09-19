@@ -6,6 +6,6 @@ cwd=`dirname $0`
 . ${cwd}/prepare.sh
 (
   cd ~/benchmarker
-  bin/benchmarker -target localhost:443 -tls
+  bin/benchmarker -target localhost:443 -tls | tee /result/bench.log
 )
 . ${cwd}/result.sh
