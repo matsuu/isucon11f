@@ -24,6 +24,9 @@
 
 !/result/
 
+# ruby関連
+.bundle
+
 # vim関連
 *~
 *.sw[op]
