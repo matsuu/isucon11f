@@ -9,26 +9,32 @@
  
 -------- Log file Recommendations ------------------------------------------------------------------
 [OK] Log file /var/log/mysql/error.log exists
-[--] Log file: /var/log/mysql/error.log(6K)
+[--] Log file: /var/log/mysql/error.log(10K)
 [OK] Log file /var/log/mysql/error.log is not empty
 [OK] Log file /var/log/mysql/error.log is smaller than 32 Mb
 [OK] Log file /var/log/mysql/error.log is readable.
-[!!] /var/log/mysql/error.log contains 17 warning(s).
+[!!] /var/log/mysql/error.log contains 27 warning(s).
 [!!] /var/log/mysql/error.log contains 3 error(s).
-[--] 6 start(s) detected in /var/log/mysql/error.log
-[--] 1) 2021-09-19T13:33:22.462040Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.26-0ubuntu0.20.04.2'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu).
-[--] 2) 2021-09-19T13:33:22.462020Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '127.0.0.1' port: 33060, socket: /var/run/mysqld/mysqlx.sock
-[--] 3) 2021-09-19T13:27:21.717281Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.26-0ubuntu0.20.04.2'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu).
-[--] 4) 2021-09-19T13:27:21.717236Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '127.0.0.1' port: 33060, socket: /var/run/mysqld/mysqlx.sock
-[--] 5) 2021-09-19T13:27:17.920205Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '127.0.0.1' port: 33060
-[--] 6) 2021-09-19T13:27:15.090930Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.26-0ubuntu0.20.04.2'  socket: '/tmp/tmp.PvlbeJQx7i/mysqld.sock'  port: 0  (Ubuntu).
-[--] 2 shutdown(s) detected in /var/log/mysql/error.log
-[--] 1) 2021-09-19T13:27:19.407930Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.0.26-0ubuntu0.20.04.2)  (Ubuntu).
-[--] 2) 2021-09-19T13:27:16.517640Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.0.26-0ubuntu0.20.04.2)  (Ubuntu).
+[--] 10 start(s) detected in /var/log/mysql/error.log
+[--] 1) 2021-09-19T21:00:08.405519Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.26-0ubuntu0.20.04.2'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu).
+[--] 2) 2021-09-19T21:00:08.405445Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '127.0.0.1' port: 33060, socket: /var/run/mysqld/mysqlx.sock
+[--] 3) 2021-09-19T20:57:45.844730Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.26-0ubuntu0.20.04.2'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu).
+[--] 4) 2021-09-19T20:57:45.844609Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '127.0.0.1' port: 33060, socket: /var/run/mysqld/mysqlx.sock
+[--] 5) 2021-09-19T13:33:22.462040Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.26-0ubuntu0.20.04.2'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu).
+[--] 6) 2021-09-19T13:33:22.462020Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '127.0.0.1' port: 33060, socket: /var/run/mysqld/mysqlx.sock
+[--] 7) 2021-09-19T13:27:21.717281Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.26-0ubuntu0.20.04.2'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu).
+[--] 8) 2021-09-19T13:27:21.717236Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '127.0.0.1' port: 33060, socket: /var/run/mysqld/mysqlx.sock
+[--] 9) 2021-09-19T13:27:17.920205Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '127.0.0.1' port: 33060
+[--] 10) 2021-09-19T13:27:15.090930Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.26-0ubuntu0.20.04.2'  socket: '/tmp/tmp.PvlbeJQx7i/mysqld.sock'  port: 0  (Ubuntu).
+[--] 4 shutdown(s) detected in /var/log/mysql/error.log
+[--] 1) 2021-09-19T20:59:01.301091Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.0.26-0ubuntu0.20.04.2)  (Ubuntu).
+[--] 2) 2021-09-19T20:57:45.222730Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.0.26-0ubuntu0.20.04.2)  (Ubuntu).
+[--] 3) 2021-09-19T13:27:19.407930Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.0.26-0ubuntu0.20.04.2)  (Ubuntu).
+[--] 4) 2021-09-19T13:27:16.517640Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.0.26-0ubuntu0.20.04.2)  (Ubuntu).
  
 -------- Storage Engine Statistics -----------------------------------------------------------------
 [--] Status: +ARCHIVE +BLACKHOLE +CSV -FEDERATED +InnoDB +MEMORY +MRG_MYISAM +MyISAM +PERFORMANCE_SCHEMA 
-[--] Data in InnoDB tables: 12.2M (Tables: 8)
+[--] Data in InnoDB tables: 17.9M (Tables: 8)
 [OK] Total fragmented tables: 0
  
 -------- Analysis Performance Metrics --------------------------------------------------------------
@@ -42,9 +48,9 @@
 [--] Skipped due to --cvefile option undefined
  
 -------- Performance Metrics -----------------------------------------------------------------------
-[--] Up for: 7h 18m 11s (694K q [26.426 qps], 326 conn, TX: 269M, RX: 105M)
-[--] Reads / Writes: 81% / 19%
-[--] Binary logging is enabled (GTID MODE: OFF)
+[--] Up for: 4m 24s (553K q [2K qps], 304 conn, TX: 220M, RX: 83M)
+[--] Reads / Writes: 82% / 18%
+[--] Binary logging is disabled
 [--] Physical Memory     : 12.3G
 [--] Max MySQL memory    : 9.8G
 [--] Other process memory: 0B
@@ -54,20 +60,19 @@
 [OK] Maximum reached memory usage: 1022.9M (8.13% of installed RAM)
 [OK] Maximum possible memory usage: 9.8G (79.62% of installed RAM)
 [OK] Overall possible memory usage with other process is compatible with memory available
-[OK] Slow queries: 0% (0/694K)
+[OK] Slow queries: 0% (0/553K)
 [OK] Highest usage of available connections: 8% (13/151)
-[OK] Aborted connections: 0.00%  (0/326)
+[OK] Aborted connections: 0.66%  (2/304)
 [!!] name resolution is active : a reverse name resolution is made for each new connection and can reduce performance
 [--] Query cache have been removed in MySQL 8
-[OK] Sorts requiring temporary tables: 1% (126 temp sorts / 8K sorts)
-[OK] No joins without indexes
-[OK] Temporary tables created on disk: 0% (0 on disk / 35K total)
-[OK] Thread cache hit rate: 94% (17 created / 326 connections)
+[OK] Sorts requiring temporary tables: 1% (127 temp sorts / 11K sorts)
+[!!] Joins performed without indexes: 4
+[OK] Temporary tables created on disk: 0% (0 on disk / 28K total)
+[OK] Thread cache hit rate: 95% (13 created / 304 connections)
 [OK] Table cache hit rate: 99% (1M hits / 1M requests)
 [OK] table_definition_cache(2000) is upper than number of tables(334)
-[OK] Open file limit used: 0% (4/10K)
-[OK] Table locks acquired immediately: 100% (4 immediate / 4 locks)
-[OK] Binlog cache memory access: 99.99% (58442 Memory / 58446 Total)
+[OK] Open file limit used: 0% (0/10K)
+[OK] Table locks acquired immediately: 100% (14 immediate / 14 locks)
  
 -------- Performance schema ------------------------------------------------------------------------
 [--] Memory used by P_S: 72B
@@ -83,14 +88,14 @@
 [--] InnoDB is enabled.
 [--] InnoDB Thread Concurrency: 0
 [OK] InnoDB File per table is activated
-[OK] InnoDB buffer pool / data size: 128.0M/12.2M
-[!!] Ratio InnoDB log file size / InnoDB Buffer pool size (75 %): 48.0M * 2/128.0M should be equal to 25%
+[OK] InnoDB buffer pool / data size: 128.0M/17.9M
+[OK] Ratio InnoDB log file size / InnoDB Buffer pool size: 16.0M * 2/128.0M should be equal to 25%
 [OK] InnoDB buffer pool instances: 1
 [--] Number of InnoDB Buffer Pool Chunk : 1 for 1 Buffer Pool Instance(s)
 [OK] Innodb_buffer_pool_size aligned with Innodb_buffer_pool_chunk_size & Innodb_buffer_pool_instances
-[OK] InnoDB Read buffer efficiency: 100.00% (30776096 hits/ 30776948 total)
-[!!] InnoDB Write Log efficiency: 75.06% (428049 hits/ 570288 total)
-[OK] InnoDB log waits: 0.00% (0 waits / 142239 writes)
+[OK] InnoDB Read buffer efficiency: 100.00% (35607263 hits/ 35608362 total)
+[!!] InnoDB Write Log efficiency: 80.21% (302764 hits/ 377443 total)
+[OK] InnoDB log waits: 0.00% (0 waits / 74679 writes)
  
 -------- Aria Metrics ------------------------------------------------------------------------------
 [--] Aria Storage Engine not available.
@@ -119,6 +124,8 @@ General recommendations:
     Check error line(s) in /var/log/mysql/error.log file
     MySQL was started within the last 24 hours - recommendations may be inaccurate
     Configure your accounts with ip or subnets only, then update your configuration with skip-name-resolve=1
-    Before changing innodb_log_file_size and/or innodb_log_files_in_group read this: https://bit.ly/2TcGgtU
+    We will suggest raising the 'join_buffer_size' until JOINs not using indexes are found.
+             See https://dev.mysql.com/doc/internals/en/join-buffer-size.html
+             (specially the conclusions at the bottom of the page).
 Variables to adjust:
-    innodb_log_file_size should be (=16M) if possible, so InnoDB total log files size equals to 25% of buffer pool size.
+    join_buffer_size (> 256.0K, or always use indexes with JOINs)

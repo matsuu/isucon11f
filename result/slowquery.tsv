@@ -1,0 +1,388 @@
+cnt	sum	min	avg	max	sumLock	sumRows	avgRows	db	query
+78263	8.4900323	1.86e-05	0.00010848	0.0191001	0	0	0.0000	isucholar	COMMIT
+78300	4.9562673	1.02e-05	6.3298e-05	0.0096669	0	0	0.0000	isucholar	START TRANSACTION
+6	0.3129568	0.0001215	0.052159466	0.1639926	0.030427	0	0.0000	isucholar	"INSERT INTO `users` (`id`, `code`, `name`, `hashed_password`, `type`) VALUES
+('01FF6J8XFYRAYQ8RQCGQCHHT34','S00000','isucon(学生)','$2a$04$ryz7PlekloOgUSQCFyvPoeo1Q9RYfcrUTj6EvUNSqfDkuIIUVKBWO','student'),
+('01FF6J8XFYAFNEX1EPEEQ2NDQB','S00001','渡辺 真美','$2a$04$GYUQPXsxgtOCEEjoSV0wM.Q1mJ6LRi9cIJIUPFT7uPCJ.eZyBM2bG','student'),
+('01FF6J8XFY4DE99G3NW36HPBGA','S00002','山崎 匠','$2a$04$efF8V4eGPMhoVlv7OKJqXuGCvIH9ZLGtZvwRYvJ/6tSKHIs4cp8oG','student'),
+('01FF6J8XFYB4K4M90JGETZGTR9','S00003','山下 優斗','$2a$04$zbX0X9N.QrMHZCtuk5eUVesaa0GRS0Bgs3FpRnN5XS52d8zTLoX8.','student'),
+('01FF6J8XFZ6DG4SX100P3AKTV5','S00004','山田 涼太','$2a$04$ULCP63Vv96B7aAFOpW/aMOaRijTjOtxi0/y3xa4cLyt6yexw8L32.','student'),
+('01FF6J8XFZP5W330HGCSW7SD7E','S00005','藤田 友香','$2a$04$dPW6RnSJ2phfBVr2gzzlK.OgGuOx3.iiwzzVzjd9WF1lT.bovUkOq','student'),
+('01FF6J8XFZVB3MRCXZ3ZVWRF3C','S00006','宮里 麻美','$2a$04$/oakixGjy5D.UKMV4BwKHeiHDSWYhTzoTtoF2Dp1QFq6mDq7DQoiK','student'),
+('01FF6J8XFZEP32QBXGMSVDXA7F','S0000..."
+2	0.0298781	0.012552	0.01493905	0.0173261	0.000218	0	0.0000	isucholar	"CREATE TABLE `registrations`
+(
+    `course_id` CHAR(26),
+    `user_id`   CHAR(26),
+    PRIMARY KEY (`course_id`, `user_id`),
+    CONSTRAINT FK_registrations_course_id FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`),
+    CONSTRAINT FK_registrations_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+);
+
+CREATE TABLE `classes`
+(
+    `id`                CHAR(26) PRIMARY KEY,
+    `course_id`         CHAR(26)         NOT NULL,
+    `part`              TINYINT UNSIGNED NOT NULL,
+    `title`             VARCHAR(255)     NOT NULL,
+    `description`       TEXT             NOT NULL,
+    `submission_closed` TINYINT(1)       NOT NULL DEFAULT false,
+    UNIQUE KEY `idx_classes_course_id_part` (`course_id`, `part`),
+    CONSTRAINT FK_classes_course_id FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`)
+);
+
+CREATE TABLE `submissions`
+(
+    `user_id`   CHAR(26)     NOT NULL,
+    `class_id`  CHAR(26)     NOT NULL,
+    `file_name` VARCHAR(255) NOT NULL,
+    `score`     TINYINT UNSIGNED,
+    PRIMARY KEY (`user_i..."
+2	0.0297516	0.0147082	0.0148758	0.0150434	0.000272	0	0.0000	isucholar	"CREATE TABLE `courses`
+(
+    `id`          CHAR(26) PRIMARY KEY,
+    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
+    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
+    `name`        VARCHAR(255)                                                  NOT NULL,
+    `description` TEXT                                                          NOT NULL,
+    `credit`      TINYINT UNSIGNED                                              NOT NULL,
+    `period`      TINYINT UNSIGNED                                              NOT NULL,
+    `day_of_week` ENUM ('monday', 'tuesday', 'wednesday', 'thursday', 'friday') NOT NULL,
+    `teacher_id`  CHAR(26)                                                      NOT NULL,
+    `keywords`    TEXT                                                          NOT NULL,
+    `status`      ENUM ('registration', 'in-progress', 'closed')                NOT NULL DEFAULT 'registration',
+    CONSTRAINT FK_courses_teacher..."
+2	0.0255403	0.0114589	0.01277015	0.0140814	0.000399	0	0.0000	isucholar	"-- master data
+CREATE TABLE `users`
+(
+    `id`              CHAR(26) PRIMARY KEY,
+    `code`            CHAR(6) UNIQUE              NOT NULL,
+    `name`            VARCHAR(255)                NOT NULL,
+    `hashed_password` BINARY(60)                  NOT NULL,
+    `type`            ENUM ('student', 'teacher') NOT NULL
+);
+
+CREATE TABLE `courses`
+(
+    `id`          CHAR(26) PRIMARY KEY,
+    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
+    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
+    `name`        VARCHAR(255)                                                  NOT NULL,
+    `description` TEXT                                                          NOT NULL,
+    `credit`      TINYINT UNSIGNED                                              NOT NULL,
+    `period`      TINYINT UNSIGNED                                              NOT NULL,
+    `day_of_week` ENUM ('monday', 'tuesday', 'wednesday', 'thursday', 'friday') NOT NULL,
+ ..."
+2	0.0254275	0.0119729	0.01271375	0.0134546	0.00023	0	0.0000	isucholar	"CREATE TABLE `submissions`
+(
+    `user_id`   CHAR(26)     NOT NULL,
+    `class_id`  CHAR(26)     NOT NULL,
+    `file_name` VARCHAR(255) NOT NULL,
+    `score`     TINYINT UNSIGNED,
+    PRIMARY KEY (`user_id`, `class_id`),
+    CONSTRAINT FK_submissions_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+    CONSTRAINT FK_submissions_class_id FOREIGN KEY (`class_id`) REFERENCES `classes` (`id`)
+);
+
+CREATE TABLE `announcements`
+(
+    `id`         CHAR(26) PRIMARY KEY,
+    `course_id`  CHAR(26)     NOT NULL,
+    `title`      VARCHAR(255) NOT NULL,
+    `message`    TEXT         NOT NULL,
+    CONSTRAINT FK_announcements_course_id FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`)
+);
+
+CREATE TABLE `unread_announcements`
+(
+    `announcement_id` CHAR(26)   NOT NULL,
+    `user_id`         CHAR(26)   NOT NULL,
+    `is_deleted`      TINYINT(1) NOT NULL DEFAULT false,
+    PRIMARY KEY (`announcement_id`, `user_id`),
+    CONSTRAINT FK_unread_announcements_announcement_id FOREIGN KEY (`announcement_id`) REFERENCE..."
+2	0.0251754	0.0120886	0.0125877	0.0130868	0.000238	0	0.0000	isucholar	"CREATE TABLE `unread_announcements`
+(
+    `announcement_id` CHAR(26)   NOT NULL,
+    `user_id`         CHAR(26)   NOT NULL,
+    `is_deleted`      TINYINT(1) NOT NULL DEFAULT false,
+    PRIMARY KEY (`announcement_id`, `user_id`),
+    CONSTRAINT FK_unread_announcements_announcement_id FOREIGN KEY (`announcement_id`) REFERENCES `announcements` (`id`),
+    CONSTRAINT FK_unread_announcements_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+)"
+2	0.0250915	0.0123693	0.01254575	0.0127222	0.000287	0	0.0000	isucholar	"CREATE TABLE `classes`
+(
+    `id`                CHAR(26) PRIMARY KEY,
+    `course_id`         CHAR(26)         NOT NULL,
+    `part`              TINYINT UNSIGNED NOT NULL,
+    `title`             VARCHAR(255)     NOT NULL,
+    `description`       TEXT             NOT NULL,
+    `submission_closed` TINYINT(1)       NOT NULL DEFAULT false,
+    UNIQUE KEY `idx_classes_course_id_part` (`course_id`, `part`),
+    CONSTRAINT FK_classes_course_id FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`)
+);
+
+CREATE TABLE `submissions`
+(
+    `user_id`   CHAR(26)     NOT NULL,
+    `class_id`  CHAR(26)     NOT NULL,
+    `file_name` VARCHAR(255) NOT NULL,
+    `score`     TINYINT UNSIGNED,
+    PRIMARY KEY (`user_id`, `class_id`),
+    CONSTRAINT FK_submissions_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+    CONSTRAINT FK_submissions_class_id FOREIGN KEY (`class_id`) REFERENCES `classes` (`id`)
+);
+
+CREATE TABLE `announcements`
+(
+    `id`         CHAR(26) PRIMARY KEY,
+    `course_id`  CHAR(26)     NOT NULL,
+    ..."
+2	0.023243	0.0105453	0.0116215	0.0126977	0.000216	0	0.0000	isucholar	"CREATE TABLE `announcements`
+(
+    `id`         CHAR(26) PRIMARY KEY,
+    `course_id`  CHAR(26)     NOT NULL,
+    `title`      VARCHAR(255) NOT NULL,
+    `message`    TEXT         NOT NULL,
+    CONSTRAINT FK_announcements_course_id FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`)
+);
+
+CREATE TABLE `unread_announcements`
+(
+    `announcement_id` CHAR(26)   NOT NULL,
+    `user_id`         CHAR(26)   NOT NULL,
+    `is_deleted`      TINYINT(1) NOT NULL DEFAULT false,
+    PRIMARY KEY (`announcement_id`, `user_id`),
+    CONSTRAINT FK_unread_announcements_announcement_id FOREIGN KEY (`announcement_id`) REFERENCES `announcements` (`id`),
+    CONSTRAINT FK_unread_announcements_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+)"
+2	0.0168878	0.0050896	0.0084439	0.0117982	0.001174	0	0.0000	isucholar	"-- CREATEと逆順
+DROP TABLE IF EXISTS `unread_announcements`;
+DROP TABLE IF EXISTS `announcements`;
+DROP TABLE IF EXISTS `submissions`;
+DROP TABLE IF EXISTS `classes`;
+DROP TABLE IF EXISTS `registrations`;
+DROP TABLE IF EXISTS `courses`;
+DROP TABLE IF EXISTS `users`;
+
+-- master data
+CREATE TABLE `users`
+(
+    `id`              CHAR(26) PRIMARY KEY,
+    `code`            CHAR(6) UNIQUE              NOT NULL,
+    `name`            VARCHAR(255)                NOT NULL,
+    `hashed_password` BINARY(60)                  NOT NULL,
+    `type`            ENUM ('student', 'teacher') NOT NULL
+);
+
+CREATE TABLE `courses`
+(
+    `id`          CHAR(26) PRIMARY KEY,
+    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
+    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
+    `name`        VARCHAR(255)                                                  NOT NULL,
+    `description` TEXT                                                          NOT NULL,
+..."
+226	0.0168227	3.2e-05	7.4436e-05	0.000633	0	0	0.0000	isucholar	SET time_zone='+00:00'
+2	0.0120474	0.0036939	0.0060237	0.0083535	0.000187	0	0.0000	isucholar	"DROP TABLE IF EXISTS `submissions`;
+DROP TABLE IF EXISTS `classes`;
+DROP TABLE IF EXISTS `registrations`;
+DROP TABLE IF EXISTS `courses`;
+DROP TABLE IF EXISTS `users`;
+
+-- master data
+CREATE TABLE `users`
+(
+    `id`              CHAR(26) PRIMARY KEY,
+    `code`            CHAR(6) UNIQUE              NOT NULL,
+    `name`            VARCHAR(255)                NOT NULL,
+    `hashed_password` BINARY(60)                  NOT NULL,
+    `type`            ENUM ('student', 'teacher') NOT NULL
+);
+
+CREATE TABLE `courses`
+(
+    `id`          CHAR(26) PRIMARY KEY,
+    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
+    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
+    `name`        VARCHAR(255)                                                  NOT NULL,
+    `description` TEXT                                                          NOT NULL,
+    `credit`      TINYINT UNSIGNED                                              NOT NULL,
+    `period`..."
+2	0.0109216	0.0048336	0.0054608	0.006088	0.000147	0	0.0000	isucholar	"DROP TABLE IF EXISTS `registrations`;
+DROP TABLE IF EXISTS `courses`;
+DROP TABLE IF EXISTS `users`;
+
+-- master data
+CREATE TABLE `users`
+(
+    `id`              CHAR(26) PRIMARY KEY,
+    `code`            CHAR(6) UNIQUE              NOT NULL,
+    `name`            VARCHAR(255)                NOT NULL,
+    `hashed_password` BINARY(60)                  NOT NULL,
+    `type`            ENUM ('student', 'teacher') NOT NULL
+);
+
+CREATE TABLE `courses`
+(
+    `id`          CHAR(26) PRIMARY KEY,
+    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
+    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
+    `name`        VARCHAR(255)                                                  NOT NULL,
+    `description` TEXT                                                          NOT NULL,
+    `credit`      TINYINT UNSIGNED                                              NOT NULL,
+    `period`      TINYINT UNSIGNED                                              ..."
+2	0.0099545	0.0049584	0.00497725	0.0049961	0.000457	0	0.0000	isucholar	"DROP TABLE IF EXISTS `courses`;
+DROP TABLE IF EXISTS `users`;
+
+-- master data
+CREATE TABLE `users`
+(
+    `id`              CHAR(26) PRIMARY KEY,
+    `code`            CHAR(6) UNIQUE              NOT NULL,
+    `name`            VARCHAR(255)                NOT NULL,
+    `hashed_password` BINARY(60)                  NOT NULL,
+    `type`            ENUM ('student', 'teacher') NOT NULL
+);
+
+CREATE TABLE `courses`
+(
+    `id`          CHAR(26) PRIMARY KEY,
+    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
+    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
+    `name`        VARCHAR(255)                                                  NOT NULL,
+    `description` TEXT                                                          NOT NULL,
+    `credit`      TINYINT UNSIGNED                                              NOT NULL,
+    `period`      TINYINT UNSIGNED                                              NOT NULL,
+    `day_of_week` ENUM ('mon..."
+2	0.0086425	0.0039713	0.00432125	0.0046712	0.000236	0	0.0000	isucholar	"DROP TABLE IF EXISTS `users`;
+
+-- master data
+CREATE TABLE `users`
+(
+    `id`              CHAR(26) PRIMARY KEY,
+    `code`            CHAR(6) UNIQUE              NOT NULL,
+    `name`            VARCHAR(255)                NOT NULL,
+    `hashed_password` BINARY(60)                  NOT NULL,
+    `type`            ENUM ('student', 'teacher') NOT NULL
+);
+
+CREATE TABLE `courses`
+(
+    `id`          CHAR(26) PRIMARY KEY,
+    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
+    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
+    `name`        VARCHAR(255)                                                  NOT NULL,
+    `description` TEXT                                                          NOT NULL,
+    `credit`      TINYINT UNSIGNED                                              NOT NULL,
+    `period`      TINYINT UNSIGNED                                              NOT NULL,
+    `day_of_week` ENUM ('monday', 'tuesday', 'wednesday', 't..."
+2	0.0079917	0.0033491	0.00399585	0.0046426	0.000211	0	0.0000	isucholar	"DROP TABLE IF EXISTS `classes`;
+DROP TABLE IF EXISTS `registrations`;
+DROP TABLE IF EXISTS `courses`;
+DROP TABLE IF EXISTS `users`;
+
+-- master data
+CREATE TABLE `users`
+(
+    `id`              CHAR(26) PRIMARY KEY,
+    `code`            CHAR(6) UNIQUE              NOT NULL,
+    `name`            VARCHAR(255)                NOT NULL,
+    `hashed_password` BINARY(60)                  NOT NULL,
+    `type`            ENUM ('student', 'teacher') NOT NULL
+);
+
+CREATE TABLE `courses`
+(
+    `id`          CHAR(26) PRIMARY KEY,
+    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
+    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
+    `name`        VARCHAR(255)                                                  NOT NULL,
+    `description` TEXT                                                          NOT NULL,
+    `credit`      TINYINT UNSIGNED                                              NOT NULL,
+    `period`      TINYINT UNSIGNED              ..."
+2	0.0078995	0.0031052	0.00394975	0.0047943	0.000193	0	0.0000	isucholar	"DROP TABLE IF EXISTS `announcements`;
+DROP TABLE IF EXISTS `submissions`;
+DROP TABLE IF EXISTS `classes`;
+DROP TABLE IF EXISTS `registrations`;
+DROP TABLE IF EXISTS `courses`;
+DROP TABLE IF EXISTS `users`;
+
+-- master data
+CREATE TABLE `users`
+(
+    `id`              CHAR(26) PRIMARY KEY,
+    `code`            CHAR(6) UNIQUE              NOT NULL,
+    `name`            VARCHAR(255)                NOT NULL,
+    `hashed_password` BINARY(60)                  NOT NULL,
+    `type`            ENUM ('student', 'teacher') NOT NULL
+);
+
+CREATE TABLE `courses`
+(
+    `id`          CHAR(26) PRIMARY KEY,
+    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
+    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
+    `name`        VARCHAR(255)                                                  NOT NULL,
+    `description` TEXT                                                          NOT NULL,
+    `credit`      TINYINT UNSIGNED                              ..."
+2	0.0025147	0.0012416	0.00125735	0.0012731	0.000576	0	0.0000	isucholar	"INSERT INTO `courses` (`id`, `code`, `type`, `name`, `description`, `credit`, `period`, `day_of_week`, `teacher_id`, `keywords`, `status`) VALUES
+('01FF6N3NA2J712CAH9X8SRRK8R', 'A0001', 'liberal-arts', '社会モデリング導入', '本講義では課題提出をもって出席の代わりとする。成績は出席と課題の提出状況により判断する。', 2, 1, 'monday', '01FF6J8XFSWM3X28NM0WXZQ8QK', '社会 モデリング', 'closed'),
+('01FF6N3NA2J712CAH9XAC2BG5E', 'A0002', 'major-subjects', '言語システム演習', '本講義では出席をランダムな講義回で取る。成績は出席と課題の提出状況により判断する。', 2, 2, 'monday', '01FF6J8XFSCAT6ADYNN5G33QQC', '言語 システム', 'closed'),
+('01FF6N3NA2J712CAH9XB3WZX2D', 'A0003', 'major-subjects', '先進マネジメント化学導入', '本講義では出席をランダムな講義回で取る。成績は課題の提出状況により判断する。', 3, 3, 'monday', '01FF6J8XFSRFYE6GGAB4Y3F94P', 'マネ..."
+2	0.0012736	0.0006275	0.0006368	0.0006461	0.0002	0	0.0000	isucholar	"INSERT INTO `submissions` VALUES
+('01FF4RXEKS0DG2EG20CN2GJB8K','01FF4RXEKS0DG2EG20CWPQ60M3','S99999_1st.pdf',72),
+('01FF4RXEKS0DG2EG20CN2GJB8K','01FF4RXEKS0DG2EG20CYAYCCGM','S99999_2nd.pdf',65),
+('01FF4RXEKS0DG2EG20CN2GJB8K','01FF4RXEKS0DG2EG20D23EQZRY','S99999_3rd.pdf',88),
+('01FF4RXEKS0DG2EG20CN2GJB8K','01FF4RXEKS0DG2EG20D4APKY18','S99999_4th.pdf',54),
+('01FF4RXEKS0DG2EG20CN2GJB8K','01FF4RXEKS0DG2EG20D61YCEM1','S99999_5th.pdf',60),
+('01FF4RXEKS0DG2EG20CQVX6FV0','01FF4RXEKS0DG2EG20CWPQ60M3','S99998_1st.pdf',12),
+('01FF4RXEKS0DG2EG20CQVX6FV0','01FF4RXEKS0DG2EG20CYAYCCGM','S99998_2nd.pdf',8),
+('01FF4RXEKS0DG2EG20CQVX6FV0','01FF4RXEKS0DG2EG20D23EQZRY','S99998_3rd.pdf',26),
+('01FF4RXEKS0DG2EG20CQVX6FV0','01FF4RXEKS0DG2EG20D4APKY18','S99998_4th.pdf',33),
+('01FF4RXEKS0DG2EG20CQVX6FV0','01FF4RXEKS0DG2EG20D61YCEM1','S99998_5th.pdf',16),
+('01FF4RXEKS0DG2EG20CTTAPEVH','01FF4RXEKS0DG2EG20CWPQ60M3','S99997_1st.pdf',90),
+('01FF4RXEKS0DG2EG20CTTAPEVH','01FF4RXEKS0DG2EG20CYAYCCGM','S99997_2nd.pdf',82),
+('01FF4RXEKS0DG2E..."
+2	0.0012593	0.000583	0.00062965	0.0006763	0.000171	0	0.0000	isucholar	"INSERT INTO `unread_announcements` VALUES
+('01FF4RXEKS0DG2EG20D6N5CNRQ','01FF4RXEKS0DG2EG20CN2GJB8K',true),
+('01FF4RXEKS0DG2EG20DA1W34X3','01FF4RXEKS0DG2EG20CN2GJB8K',true),
+('01FF4RXEKS0DG2EG20DAGTWP61','01FF4RXEKS0DG2EG20CN2GJB8K',true),
+('01FF4RXEKS0DG2EG20DBT4PFHF','01FF4RXEKS0DG2EG20CN2GJB8K',true),
+('01FF4RXEKS0DG2EG20DDPCS14P','01FF4RXEKS0DG2EG20CN2GJB8K',false),
+('01FF4RXEKS0DG2EG20D6N5CNRQ','01FF4RXEKS0DG2EG20CQVX6FV0',true),
+('01FF4RXEKS0DG2EG20DA1W34X3','01FF4RXEKS0DG2EG20CQVX6FV0',true),
+('01FF4RXEKS0DG2EG20DAGTWP61','01FF4RXEKS0DG2EG20CQVX6FV0',true),
+('01FF4RXEKS0DG2EG20DBT4PFHF','01FF4RXEKS0DG2EG20CQVX6FV0',true),
+('01FF4RXEKS0DG2EG20DDPCS14P','01FF4RXEKS0DG2EG20CQVX6FV0',true),
+('01FF4RXEKS0DG2EG20D6N5CNRQ','01FF4RXEKS0DG2EG20CTTAPEVH',true),
+('01FF4RXEKS0DG2EG20DA1W34X3','01FF4RXEKS0DG2EG20CTTAPEVH',true),
+('01FF4RXEKS0DG2EG20DAGTWP61','01FF4RXEKS0DG2EG20CTTAPEVH',true),
+('01FF4RXEKS0DG2EG20DBT4PFHF','01FF4RXEKS0DG2EG20CTTAPEVH',true),
+('01FF4RXEKS0DG2EG20DDPCS14P','01FF4RXEKS0DG2EG20CTTAP..."
+2	0.0010666	0.000533	0.0005333	0.0005336	0.000153	0	0.0000	isucholar	"INSERT INTO `classes` VALUES
+('01FF4RXEKS0DG2EG20CWPQ60M3','01FF4RXEKS0DG2EG20CWPQ60M3',1,'ISUCON3 予選','本日はISUCON3 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。',0),
+('01FF4RXEKS0DG2EG20CYAYCCGM','01FF4RXEKS0DG2EG20CWPQ60M3',2,'ISUCON4 予選','本日はISUCON4 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。',0),
+('01FF4RXEKS0DG2EG20D23EQZRY','01FF4RXEKS0DG2EG20CWPQ60M3',3,'ISUCON5 予選','本日はISUCON5 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。',0),
+('01FF4RXEKS0DG2EG20D4APKY18','01FF4RXEKS0DG2EG20CWPQ60M3',4,'ISUCON6 予選','本日はISUCON6 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。',0),
+('01FF4RXEKS0DG2EG20D61YCEM1','01FF4RXEKS0DG2EG20CWPQ60M3',5,'ISUCON7 予選','本日はISUC..."
+2	0.0009657	0.0004666	0.00048285	0.0004991	0.000154	0	0.0000	isucholar	"INSERT INTO `announcements` VALUES
+('01FF4RXEKS0DG2EG20D6N5CNRQ','01FF4RXEKS0DG2EG20CWPQ60M3','講義追加: ISUCON3 予選','講義が新しく追加されました: ISUCON3 予選\n本日はISUCON3 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。'),
+('01FF4RXEKS0DG2EG20DA1W34X3','01FF4RXEKS0DG2EG20CWPQ60M3','講義追加: ISUCON4 予選','講義が新しく追加されました: ISUCON4 予選\n本日はISUCON4 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。'),
+('01FF4RXEKS0DG2EG20DAGTWP61','01FF4RXEKS0DG2EG20CWPQ60M3','講義追加: ISUCON5 予選','講義が新しく追加されました: ISUCON5 予選\n本日はISUCON5 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。'),
+('01FF4RXEKS0DG2EG20DBT4PFHF','01FF4RXEKS0DG2EG20CWPQ60M3','講義追加: ISUCON6 予選','講義が新..."
+2	0.0008924	0.000445	0.0004462	0.0004474	0.000141	0	0.0000	isucholar	"INSERT INTO `registrations` VALUES
+('01FF4RXEKS0DG2EG20CWPQ60M3','01FF4RXEKS0DG2EG20CN2GJB8K'),
+('01FF4RXEKS0DG2EG20CWPQ60M3','01FF4RXEKS0DG2EG20CQVX6FV0'),
+('01FF4RXEKS0DG2EG20CWPQ60M3','01FF4RXEKS0DG2EG20CTTAPEVH'),
+('01FF4RXEKS0DG2EG20CYAYCCGM','01FF4RXEKS0DG2EG20CN2GJB8K');
+
+INSERT INTO `classes` VALUES
+('01FF4RXEKS0DG2EG20CWPQ60M3','01FF4RXEKS0DG2EG20CWPQ60M3',1,'ISUCON3 予選','本日はISUCON3 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。',0),
+('01FF4RXEKS0DG2EG20CYAYCCGM','01FF4RXEKS0DG2EG20CWPQ60M3',2,'ISUCON4 予選','本日はISUCON4 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。',0),
+('01FF4RXEKS0DG2EG20D23EQZRY','01FF4RXEKS0DG2EG20CWPQ60M3',3,'ISUCON5 予選','本日はISUCON5 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。',0),
+('01FF4RXEKS0DG2EG20D4APKY18','01FF4R..."
+18	0.00087	4.06e-05	4.8333e-05	6.39e-05	0	0	0.0000	isucholar	ROLLBACK
+2	0.0002191	0.0001089	0.00010955	0.0001102	8.1e-05	0	0.0000	isucholar	"INSERT INTO `courses` VALUES
+('01FF4RXEKS0DG2EG20CWPQ60M3','X0001','major-subjects','ISUCON演習第一','この科目ではISUCONの過去問を通してサーバのチューニングアップを学びます。課題は講義中に出題するクイズへの回答を提出してください。本講義の成績は課題の提出状況により判断します。',1,1,'monday','01FF4RXEKS0DG2EG20CKDWS7CC','ISUCON SpeedUP','in-progress'),
+('01FF4RXEKS0DG2EG20CYAYCCGM','X0002','major-subjects','ISUCON演習第二','この科目ではISUCONの過去問を通してサーバのチューニングアップを学びます。課題は講義中に出題するクイズへの回答を提出してください。本講義の成績は課題の提出状況により判断します。',1,1,'tuesday','01FF4RXEKS0DG2EG20CKDWS7CC','ISUCON SpeedUP','in-progress'),
+('01FF4RXEKS0DG2EG20D23EQZRY','X0003','major-subjects','ISUCON演習第三','この科目ではISUCONの過去問を通してサーバのチューニングアッ..."
