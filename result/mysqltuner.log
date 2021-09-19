@@ -34,7 +34,7 @@
  
 -------- Storage Engine Statistics -----------------------------------------------------------------
 [--] Status: +ARCHIVE +BLACKHOLE +CSV -FEDERATED +InnoDB +MEMORY +MRG_MYISAM +MyISAM +PERFORMANCE_SCHEMA 
-[--] Data in InnoDB tables: 18.7M (Tables: 8)
+[--] Data in InnoDB tables: 18.6M (Tables: 8)
 [OK] Total fragmented tables: 0
  
 -------- Analysis Performance Metrics --------------------------------------------------------------
@@ -48,7 +48,7 @@
 [--] Skipped due to --cvefile option undefined
  
 -------- Performance Metrics -----------------------------------------------------------------------
-[--] Up for: 18m 43s (1M q [1K qps], 956 conn, TX: 550M, RX: 250M)
+[--] Up for: 1h 9m 50s (2M q [574.026 qps], 1K conn, TX: 715M, RX: 337M)
 [--] Reads / Writes: 82% / 18%
 [--] Binary logging is disabled
 [--] Physical Memory     : 12.3G
@@ -60,19 +60,19 @@
 [OK] Maximum reached memory usage: 1.1G (8.65% of installed RAM)
 [OK] Maximum possible memory usage: 9.8G (79.62% of installed RAM)
 [OK] Overall possible memory usage with other process is compatible with memory available
-[OK] Slow queries: 0% (0/1M)
+[OK] Slow queries: 0% (0/2M)
 [OK] Highest usage of available connections: 9% (14/151)
-[OK] Aborted connections: 0.21%  (2/956)
+[OK] Aborted connections: 0.16%  (2/1271)
 [!!] name resolution is active : a reverse name resolution is made for each new connection and can reduce performance
 [--] Query cache have been removed in MySQL 8
-[OK] Sorts requiring temporary tables: 1% (404 temp sorts / 34K sorts)
-[!!] Joins performed without indexes: 8
-[OK] Temporary tables created on disk: 0% (0 on disk / 93K total)
-[OK] Thread cache hit rate: 97% (22 created / 956 connections)
-[OK] Table cache hit rate: 99% (2M hits / 2M requests)
+[OK] Sorts requiring temporary tables: 1% (561 temp sorts / 46K sorts)
+[OK] No joins without indexes
+[OK] Temporary tables created on disk: 0% (0 on disk / 129K total)
+[OK] Thread cache hit rate: 97% (26 created / 1K connections)
+[OK] Table cache hit rate: 99% (3M hits / 3M requests)
 [OK] table_definition_cache(2000) is upper than number of tables(334)
 [OK] Open file limit used: 0% (0/10K)
-[OK] Table locks acquired immediately: 100% (26 immediate / 26 locks)
+[OK] Table locks acquired immediately: 100% (32 immediate / 32 locks)
  
 -------- Performance schema ------------------------------------------------------------------------
 [--] Memory used by P_S: 72B
@@ -88,14 +88,14 @@
 [--] InnoDB is enabled.
 [--] InnoDB Thread Concurrency: 0
 [OK] InnoDB File per table is activated
-[OK] InnoDB buffer pool / data size: 128.0M/18.7M
+[OK] InnoDB buffer pool / data size: 128.0M/18.6M
 [OK] Ratio InnoDB log file size / InnoDB Buffer pool size: 16.0M * 2/128.0M should be equal to 25%
 [OK] InnoDB buffer pool instances: 1
 [--] Number of InnoDB Buffer Pool Chunk : 1 for 1 Buffer Pool Instance(s)
 [OK] Innodb_buffer_pool_size aligned with Innodb_buffer_pool_chunk_size & Innodb_buffer_pool_instances
-[OK] InnoDB Read buffer efficiency: 100.00% (119803556 hits/ 119804659 total)
-[!!] InnoDB Write Log efficiency: 81.71% (999992 hits/ 1223763 total)
-[OK] InnoDB log waits: 0.00% (0 waits / 223771 writes)
+[OK] InnoDB Read buffer efficiency: 100.00% (165607421 hits/ 165608524 total)
+[!!] InnoDB Write Log efficiency: 82.01% (1365136 hits/ 1664601 total)
+[OK] InnoDB log waits: 0.00% (0 waits / 299465 writes)
  
 -------- Aria Metrics ------------------------------------------------------------------------------
 [--] Aria Storage Engine not available.
@@ -124,8 +124,3 @@ General recommendations:
     Check error line(s) in /var/log/mysql/error.log file
     MySQL was started within the last 24 hours - recommendations may be inaccurate
     Configure your accounts with ip or subnets only, then update your configuration with skip-name-resolve=1
-    We will suggest raising the 'join_buffer_size' until JOINs not using indexes are found.
-             See https://dev.mysql.com/doc/internals/en/join-buffer-size.html
-             (specially the conclusions at the bottom of the page).
-Variables to adjust:
-    join_buffer_size (> 256.0K, or always use indexes with JOINs)
