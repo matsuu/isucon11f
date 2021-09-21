@@ -1,6 +1,8 @@
 package main
 
 import (
+	"archive/zip"
+	"compress/flate"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -12,14 +14,18 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync/atomic"
 
 	"github.com/go-sql-driver/mysql"
+	"github.com/goccy/go-json"
 	"github.com/gorilla/sessions"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/zhangyunhao116/skipmap"
 	"golang.org/x/crypto/bcrypt"
+	"golang.org/x/sync/singleflight"
 )
 
 const (
@@ -34,6 +40,11 @@ type handlers struct {
 	DB *sqlx.DB
 }
 
+var (
+	mapSubmitters *skipmap.StringMap
+	gpasGroup     singleflight.Group
+)
+
 func main() {
 	e := echo.New()
 	e.Debug = GetEnv("DEBUG", "") == "true"
@@ -44,10 +55,15 @@ func main() {
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte("trapnomura"))))
 
 	db, _ := GetDB(false)
-	db.SetMaxOpenConns(10)
+	db.SetMaxOpenConns(300)
+	db.SetMaxIdleConns(300)
 
 	h := &handlers{
 		DB: db,
+	}
+
+	if err := h.updateSet(); err != nil {
+		panic(err)
 	}
 
 	e.POST("/initialize", h.Initialize)
@@ -111,6 +127,11 @@ func (h *handlers) Initialize(c echo.Context) error {
 		}
 	}
 
+	if err := h.updateSet(); err != nil {
+		c.Logger().Error(err)
+		return c.NoContent(http.StatusInternalServerError)
+	}
+
 	if err := exec.Command("rm", "-rf", AssignmentsDirectory).Run(); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
@@ -120,10 +141,17 @@ func (h *handlers) Initialize(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
+	if _, err := h.DB.Exec("ALTER TABLE unread_announcements ADD INDEX(user_id, is_deleted)"); err != nil {
+		c.Logger().Error(err)
+		return c.NoContent(http.StatusInternalServerError)
+	}
+
 	res := InitializeResponse{
 		Language: "go",
 	}
-	return c.JSON(http.StatusOK, res)
+	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
+	c.Response().WriteHeader(http.StatusOK)
+	return json.NewEncoder(c.Response()).Encode(res)
 }
 
 // IsLoggedIn ログイン確認用middleware
@@ -243,6 +271,26 @@ type Course struct {
 	Status      CourseStatus `db:"status"`
 }
 
+func (h *handlers) updateSet() error {
+	mapSubmitters = skipmap.NewString()
+	rows, err := h.DB.Queryx("SELECT class_id, COUNT(class_id) FROM submissions GROUP BY class_id")
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id string
+		var cnt int64
+		err := rows.Scan(&id, &cnt)
+		if err != nil {
+			return err
+		}
+		mapSubmitters.Store(id, &cnt)
+	}
+	return nil
+}
+
 // ---------- Public API ----------
 
 type LoginRequest struct {
@@ -338,7 +386,9 @@ func (h *handlers) GetMe(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	return c.JSON(http.StatusOK, GetMeResponse{
+	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
+	c.Response().WriteHeader(http.StatusOK)
+	return json.NewEncoder(c.Response()).Encode(GetMeResponse{
 		Code:    userCode,
 		Name:    userName,
 		IsAdmin: isAdmin,
@@ -372,7 +422,9 @@ func (h *handlers) GetRegisteredCourses(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	return c.JSON(http.StatusOK, res)
+	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
+	c.Response().WriteHeader(http.StatusOK)
+	return json.NewEncoder(c.Response()).Encode(res)
 }
 
 type RegisterCourseRequestContent struct {
@@ -427,12 +479,12 @@ func (h *handlers) RegisterCourses(c echo.Context) error {
 		}
 
 		// すでに履修登録済みの科目は無視する
-		var count int
-		if err := tx.Get(&count, "SELECT COUNT(*) FROM `registrations` WHERE `course_id` = ? AND `user_id` = ?", course.ID, userID); err != nil {
+		var exists bool
+		if err := tx.Get(&exists, "SELECT EXISTS(SELECT 1 FROM `registrations` WHERE `course_id` = ? AND `user_id` = ?)", course.ID, userID); err != nil {
 			c.Logger().Error(err)
 			return c.NoContent(http.StatusInternalServerError)
 		}
-		if count > 0 {
+		if exists {
 			continue
 		}
 
@@ -493,6 +545,20 @@ type GetGradeResponse struct {
 	CourseResults []CourseResult `json:"courses"`
 }
 
+type Gpas struct {
+	Gpas   []float64
+	GpaAvg float64
+	GpaMax float64
+	GpaMin float64
+}
+
+type Totals struct {
+	Scores   []int
+	ScoreAvg float64
+	ScoreMax int
+	ScoreMin int
+}
+
 type Summary struct {
 	Credits   int     `json:"credits"`
 	GPA       float64 `json:"gpa"`
@@ -529,91 +595,119 @@ func (h *handlers) GetGrades(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
+	// GPAの統計値
+	// 一つでも修了した科目がある学生のGPA一覧
+	ch := gpasGroup.DoChan("gpas", func() (interface{}, error) {
+		var gpas []float64
+		query := "SELECT IFNULL(SUM(`submissions`.`score` * `courses`.`credit`), 0) / 100 / `credits`.`credits` AS `gpa`" +
+			" FROM `registrations`" +
+			" JOIN (" +
+			"     SELECT `registrations`.`user_id`, SUM(`courses`.`credit`) AS `credits`" +
+			"     FROM `registrations`" +
+			"     JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` AND `courses`.`status` = ?" +
+			"     GROUP BY `registrations`.`user_id`" +
+			" ) AS `credits` ON `credits`.`user_id` = `registrations`.`user_id`" +
+			" JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` AND `courses`.`status` = ?" +
+			" LEFT JOIN `classes` ON `courses`.`id` = `classes`.`course_id`" +
+			" LEFT JOIN `submissions` ON `registrations`.`user_id` = `submissions`.`user_id` AND `submissions`.`class_id` = `classes`.`id`" +
+			" GROUP BY `registrations`.`user_id`"
+
+		err := h.DB.Select(&gpas, query, StatusClosed, StatusClosed)
+		return Gpas{
+			Gpas:   gpas,
+			GpaAvg: averageFloat64(gpas, 0),
+			GpaMax: maxFloat64(gpas, 0),
+			GpaMin: minFloat64(gpas, 0),
+		}, err
+	})
+
 	// 履修している科目一覧取得
-	var registeredCourses []Course
 	query := "SELECT `courses`.*" +
 		" FROM `registrations`" +
 		" JOIN `courses` ON `registrations`.`course_id` = `courses`.`id`" +
 		" WHERE `user_id` = ?"
-	if err := h.DB.Select(&registeredCourses, query, userID); err != nil {
+	rows, err := h.DB.Queryx(query, userID)
+	if err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
+	defer rows.Close()
 
 	// 科目毎の成績計算処理
-	courseResults := make([]CourseResult, 0, len(registeredCourses))
+	courseResults := make([]CourseResult, 0)
 	myGPA := 0.0
 	myCredits := 0
-	for _, course := range registeredCourses {
+	for rows.Next() {
+		var course Course
+		if err := rows.StructScan(&course); err != nil {
+			c.Logger().Error(err)
+			return c.NoContent(http.StatusInternalServerError)
+		}
+
+		chCourse := gpasGroup.DoChan(course.ID, func() (interface{}, error) {
+			// この科目を履修している学生のTotalScore一覧を取得
+			var totals []int
+			query := "SELECT IFNULL(SUM(`submissions`.`score`), 0) AS `total_score`" +
+				" FROM `registrations`" +
+				" LEFT JOIN `classes` ON `registrations`.`course_id` = `classes`.`course_id`" +
+				" LEFT JOIN `submissions` ON `registrations`.`user_id` = `submissions`.`user_id` AND `submissions`.`class_id` = `classes`.`id`" +
+				" WHERE `registrations`.`course_id` = ?" +
+				" GROUP BY `registrations`.`user_id`"
+			err := h.DB.Select(&totals, query, course.ID)
+			return Totals{
+				Scores:   totals,
+				ScoreAvg: averageInt(totals, 0),
+				ScoreMax: maxInt(totals, 0),
+				ScoreMin: minInt(totals, 0),
+			}, err
+		})
+
 		// 講義一覧の取得
-		var classes []Class
-		query = "SELECT *" +
-			" FROM `classes`" +
-			" WHERE `course_id` = ?" +
-			" ORDER BY `part` DESC"
-		if err := h.DB.Select(&classes, query, course.ID); err != nil {
+		classScores := make([]ClassScore, 0)
+		query := "SELECT C.id, C.part, C.title, S.score" +
+			" FROM `classes` C" +
+			" LEFT JOIN submissions S ON C.id = S.class_id AND S.user_id = ?" +
+			" WHERE C.`course_id` = ?" +
+			" ORDER BY C.`part` DESC"
+		classRows, err := h.DB.Queryx(query, userID, course.ID)
+		if err != nil {
 			c.Logger().Error(err)
 			return c.NoContent(http.StatusInternalServerError)
 		}
 
 		// 講義毎の成績計算処理
-		classScores := make([]ClassScore, 0, len(classes))
 		var myTotalScore int
-		for _, class := range classes {
-			var submissionsCount int
-			if err := h.DB.Get(&submissionsCount, "SELECT COUNT(*) FROM `submissions` WHERE `class_id` = ?", class.ID); err != nil {
+		for classRows.Next() {
+			cs := ClassScore{}
+			if err := classRows.Scan(&cs.ClassID, &cs.Part, &cs.Title, &cs.Score); err != nil {
 				c.Logger().Error(err)
 				return c.NoContent(http.StatusInternalServerError)
 			}
-
-			var myScore sql.NullInt64
-			if err := h.DB.Get(&myScore, "SELECT `submissions`.`score` FROM `submissions` WHERE `user_id` = ? AND `class_id` = ?", userID, class.ID); err != nil && err != sql.ErrNoRows {
-				c.Logger().Error(err)
-				return c.NoContent(http.StatusInternalServerError)
-			} else if err == sql.ErrNoRows || !myScore.Valid {
-				classScores = append(classScores, ClassScore{
-					ClassID:    class.ID,
-					Part:       class.Part,
-					Title:      class.Title,
-					Score:      nil,
-					Submitters: submissionsCount,
-				})
-			} else {
-				score := int(myScore.Int64)
-				myTotalScore += score
-				classScores = append(classScores, ClassScore{
-					ClassID:    class.ID,
-					Part:       class.Part,
-					Title:      class.Title,
-					Score:      &score,
-					Submitters: submissionsCount,
-				})
+			if v, ok := mapSubmitters.Load(cs.ClassID); ok {
+				cs.Submitters = int(*v.(*int64))
 			}
+			if cs.Score != nil {
+				myTotalScore += *cs.Score
+			}
+			classScores = append(classScores, cs)
 		}
+		classRows.Close()
 
-		// この科目を履修している学生のTotalScore一覧を取得
-		var totals []int
-		query := "SELECT IFNULL(SUM(`submissions`.`score`), 0) AS `total_score`" +
-			" FROM `users`" +
-			" JOIN `registrations` ON `users`.`id` = `registrations`.`user_id`" +
-			" JOIN `courses` ON `registrations`.`course_id` = `courses`.`id`" +
-			" LEFT JOIN `classes` ON `courses`.`id` = `classes`.`course_id`" +
-			" LEFT JOIN `submissions` ON `users`.`id` = `submissions`.`user_id` AND `submissions`.`class_id` = `classes`.`id`" +
-			" WHERE `courses`.`id` = ?" +
-			" GROUP BY `users`.`id`"
-		if err := h.DB.Select(&totals, query, course.ID); err != nil {
+		results := <-chCourse
+		if err := results.Err; err != nil {
 			c.Logger().Error(err)
 			return c.NoContent(http.StatusInternalServerError)
 		}
+		totals := results.Val.(Totals)
 
 		courseResults = append(courseResults, CourseResult{
 			Name:             course.Name,
 			Code:             course.Code,
 			TotalScore:       myTotalScore,
-			TotalScoreTScore: tScoreInt(myTotalScore, totals),
-			TotalScoreAvg:    averageInt(totals, 0),
-			TotalScoreMax:    maxInt(totals, 0),
-			TotalScoreMin:    minInt(totals, 0),
+			TotalScoreTScore: tScoreInt(myTotalScore, totals.Scores),
+			TotalScoreAvg:    totals.ScoreAvg,
+			TotalScoreMax:    totals.ScoreMax,
+			TotalScoreMin:    totals.ScoreMin,
 			ClassScores:      classScores,
 		})
 
@@ -627,42 +721,28 @@ func (h *handlers) GetGrades(c echo.Context) error {
 		myGPA = myGPA / 100 / float64(myCredits)
 	}
 
-	// GPAの統計値
-	// 一つでも修了した科目がある学生のGPA一覧
-	var gpas []float64
-	query = "SELECT IFNULL(SUM(`submissions`.`score` * `courses`.`credit`), 0) / 100 / `credits`.`credits` AS `gpa`" +
-		" FROM `users`" +
-		" JOIN (" +
-		"     SELECT `users`.`id` AS `user_id`, SUM(`courses`.`credit`) AS `credits`" +
-		"     FROM `users`" +
-		"     JOIN `registrations` ON `users`.`id` = `registrations`.`user_id`" +
-		"     JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` AND `courses`.`status` = ?" +
-		"     GROUP BY `users`.`id`" +
-		" ) AS `credits` ON `credits`.`user_id` = `users`.`id`" +
-		" JOIN `registrations` ON `users`.`id` = `registrations`.`user_id`" +
-		" JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` AND `courses`.`status` = ?" +
-		" LEFT JOIN `classes` ON `courses`.`id` = `classes`.`course_id`" +
-		" LEFT JOIN `submissions` ON `users`.`id` = `submissions`.`user_id` AND `submissions`.`class_id` = `classes`.`id`" +
-		" WHERE `users`.`type` = ?" +
-		" GROUP BY `users`.`id`"
-	if err := h.DB.Select(&gpas, query, StatusClosed, StatusClosed, Student); err != nil {
+	gpasResult := <-ch
+	if err := gpasResult.Err; err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
+	gpas := gpasResult.Val.(Gpas)
 
 	res := GetGradeResponse{
 		Summary: Summary{
 			Credits:   myCredits,
 			GPA:       myGPA,
-			GpaTScore: tScoreFloat64(myGPA, gpas),
-			GpaAvg:    averageFloat64(gpas, 0),
-			GpaMax:    maxFloat64(gpas, 0),
-			GpaMin:    minFloat64(gpas, 0),
+			GpaTScore: tScoreFloat64(myGPA, gpas.Gpas),
+			GpaAvg:    gpas.GpaAvg,
+			GpaMax:    gpas.GpaMax,
+			GpaMin:    gpas.GpaMin,
 		},
 		CourseResults: courseResults,
 	}
 
-	return c.JSON(http.StatusOK, res)
+	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
+	c.Response().WriteHeader(http.StatusOK)
+	return json.NewEncoder(c.Response()).Encode(res)
 }
 
 // ---------- Courses API ----------
@@ -774,7 +854,9 @@ func (h *handlers) SearchCourses(c echo.Context) error {
 		res = res[:len(res)-1]
 	}
 
-	return c.JSON(http.StatusOK, res)
+	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
+	c.Response().WriteHeader(http.StatusOK)
+	return json.NewEncoder(c.Response()).Encode(res)
 }
 
 type AddCourseRequest struct {
@@ -865,7 +947,9 @@ func (h *handlers) GetCourseDetail(c echo.Context) error {
 		return c.String(http.StatusNotFound, "No such course.")
 	}
 
-	return c.JSON(http.StatusOK, res)
+	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
+	c.Response().WriteHeader(http.StatusOK)
+	return json.NewEncoder(c.Response()).Encode(res)
 }
 
 type SetCourseStatusRequest struct {
@@ -923,12 +1007,12 @@ func (h *handlers) GetClasses(c echo.Context) error {
 
 	courseID := c.Param("courseID")
 
-	var count int
-	if err := h.DB.Get(&count, "SELECT COUNT(*) FROM `courses` WHERE `id` = ?", courseID); err != nil {
+	var exists bool
+	if err := h.DB.Get(&exists, "SELECT EXISTS(SELECT id FROM `courses` WHERE `id` = ?)", courseID); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
-	if count == 0 {
+	if !exists {
 		return c.String(http.StatusNotFound, "No such course.")
 	}
 
@@ -959,7 +1043,9 @@ func (h *handlers) GetClasses(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, res)
+	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
+	c.Response().WriteHeader(http.StatusOK)
+	return json.NewEncoder(c.Response()).Encode(res)
 }
 
 type AddClassRequest struct {
@@ -1028,6 +1114,7 @@ func (h *handlers) AddClass(c echo.Context) error {
 
 // SubmitAssignment POST /api/courses/:courseID/classes/:classID/assignments 課題の提出
 func (h *handlers) SubmitAssignment(c echo.Context) error {
+	c.Request().ParseMultipartForm(65536)
 	userID, _, _, err := getUserInfo(c)
 	if err != nil {
 		c.Logger().Error(err)
@@ -1055,12 +1142,12 @@ func (h *handlers) SubmitAssignment(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "This course is not in progress.")
 	}
 
-	var registrationCount int
-	if err := tx.Get(&registrationCount, "SELECT COUNT(*) FROM `registrations` WHERE `user_id` = ? AND `course_id` = ?", userID, courseID); err != nil {
+	var registrationExists bool
+	if err := tx.Get(&registrationExists, "SELECT EXISTS(SELECT 1 FROM `registrations` WHERE `user_id` = ? AND `course_id` = ?)", userID, courseID); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
-	if registrationCount == 0 {
+	if !registrationExists {
 		return c.String(http.StatusBadRequest, "You have not taken this course.")
 	}
 
@@ -1085,15 +1172,18 @@ func (h *handlers) SubmitAssignment(c echo.Context) error {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
+	v, _ := mapSubmitters.LoadOrStore(classID, new(int64))
+	atomic.AddInt64(v.(*int64), 1)
 
-	data, err := io.ReadAll(file)
+	dst := AssignmentsDirectory + classID + "-" + userID + ".pdf"
+	pdf, err := os.Create(dst)
 	if err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
+	defer pdf.Close()
 
-	dst := AssignmentsDirectory + classID + "-" + userID + ".pdf"
-	if err := os.WriteFile(dst, data, 0666); err != nil {
+	if _, err := io.Copy(pdf, file); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
@@ -1172,27 +1262,53 @@ func (h *handlers) DownloadSubmittedAssignments(c echo.Context) error {
 	defer tx.Rollback()
 
 	var classCount int
-	if err := tx.Get(&classCount, "SELECT COUNT(*) FROM `classes` WHERE `id` = ? FOR UPDATE", classID); err != nil {
+	if err := tx.Get(&classCount, "SELECT COUNT(id) FROM `classes` WHERE `id` = ? FOR UPDATE", classID); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
 	if classCount == 0 {
 		return c.String(http.StatusNotFound, "No such class.")
 	}
-	var submissions []Submission
+
+	c.Response().Header().Set(echo.HeaderContentType, "application/zip")
+	c.Response().WriteHeader(http.StatusOK)
+	zw := zip.NewWriter(c.Response())
+	zw.RegisterCompressor(zip.Deflate, func(out io.Writer) (io.WriteCloser, error) {
+		return flate.NewWriter(out, flate.NoCompression)
+	})
+	defer zw.Close()
+
 	query := "SELECT `submissions`.`user_id`, `submissions`.`file_name`, `users`.`code` AS `user_code`" +
 		" FROM `submissions`" +
 		" JOIN `users` ON `users`.`id` = `submissions`.`user_id`" +
 		" WHERE `class_id` = ?"
-	if err := tx.Select(&submissions, query, classID); err != nil {
+	rows, err := tx.Queryx(query, classID)
+	if err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
-
-	zipFilePath := AssignmentsDirectory + classID + ".zip"
-	if err := createSubmissionsZip(zipFilePath, classID, submissions); err != nil {
-		c.Logger().Error(err)
-		return c.NoContent(http.StatusInternalServerError)
+	for rows.Next() {
+		var submission Submission
+		err := rows.StructScan(&submission)
+		if err != nil {
+			c.Logger().Error(err)
+			return c.NoContent(http.StatusInternalServerError)
+		}
+		pw, err := zw.Create(fmt.Sprintf("%s-%s", submission.UserCode, submission.FileName))
+		if err != nil {
+			c.Logger().Error(err)
+			return c.NoContent(http.StatusInternalServerError)
+		}
+		pdf, err := os.Open(AssignmentsDirectory + classID + "-" + submission.UserID + ".pdf")
+		if err != nil {
+			c.Logger().Error(err)
+			return c.NoContent(http.StatusInternalServerError)
+		}
+		if _, err := io.Copy(pw, pdf); err != nil {
+			c.Logger().Error(err)
+			return c.NoContent(http.StatusInternalServerError)
+		}
+		pdf.Close()
 	}
 
 	if _, err := tx.Exec("UPDATE `classes` SET `submission_closed` = true WHERE `id` = ?", classID); err != nil {
@@ -1205,31 +1321,7 @@ func (h *handlers) DownloadSubmittedAssignments(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	return c.File(zipFilePath)
-}
-
-func createSubmissionsZip(zipFilePath string, classID string, submissions []Submission) error {
-	tmpDir := AssignmentsDirectory + classID + "/"
-	if err := exec.Command("rm", "-rf", tmpDir).Run(); err != nil {
-		return err
-	}
-	if err := exec.Command("mkdir", tmpDir).Run(); err != nil {
-		return err
-	}
-
-	// ファイル名を指定の形式に変更
-	for _, submission := range submissions {
-		if err := exec.Command(
-			"ln",
-			AssignmentsDirectory+classID+"-"+submission.UserID+".pdf",
-			tmpDir+submission.UserCode+"-"+submission.FileName,
-		).Run(); err != nil {
-			return err
-		}
-	}
-
-	// -i 'tmpDir/*': 空zipを許す
-	return exec.Command("zip", "-j", "-r", zipFilePath, tmpDir, "-i", tmpDir+"*").Run()
+	return nil
 }
 
 // ---------- Announcement API ----------
@@ -1295,7 +1387,7 @@ func (h *handlers) GetAnnouncementList(c echo.Context) error {
 	}
 
 	var unreadCount int
-	if err := h.DB.Get(&unreadCount, "SELECT COUNT(*) FROM `unread_announcements` WHERE `user_id` = ? AND NOT `is_deleted`", userID); err != nil {
+	if err := h.DB.Get(&unreadCount, "SELECT COUNT(1) FROM `unread_announcements` WHERE `user_id` = ? AND NOT `is_deleted`", userID); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
@@ -1329,7 +1421,9 @@ func (h *handlers) GetAnnouncementList(c echo.Context) error {
 	// 対象になっているお知らせが0件の時は空配列を返却
 	announcementsRes := append(make([]AnnouncementWithoutDetail, 0, len(announcements)), announcements...)
 
-	return c.JSON(http.StatusOK, GetAnnouncementsResponse{
+	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
+	c.Response().WriteHeader(http.StatusOK)
+	return json.NewEncoder(c.Response()).Encode(GetAnnouncementsResponse{
 		UnreadCount:   unreadCount,
 		Announcements: announcementsRes,
 	})
@@ -1364,7 +1458,7 @@ func (h *handlers) AddAnnouncement(c echo.Context) error {
 	defer tx.Rollback()
 
 	var count int
-	if err := tx.Get(&count, "SELECT COUNT(*) FROM `courses` WHERE `id` = ?", req.CourseID); err != nil {
+	if err := tx.Get(&count, "SELECT COUNT(id) FROM `courses` WHERE `id` = ?", req.CourseID); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
@@ -1390,20 +1484,10 @@ func (h *handlers) AddAnnouncement(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	var targets []User
-	query := "SELECT `users`.* FROM `users`" +
-		" JOIN `registrations` ON `users`.`id` = `registrations`.`user_id`" +
-		" WHERE `registrations`.`course_id` = ?"
-	if err := tx.Select(&targets, query, req.CourseID); err != nil {
+	query := "INSERT INTO `unread_announcements` (announcement_id, user_id) SELECT ?, user_id FROM `registrations` WHERE `course_id` = ?"
+	if _, err := tx.Exec(query, req.ID, req.CourseID); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
-	}
-
-	for _, user := range targets {
-		if _, err := tx.Exec("INSERT INTO `unread_announcements` (`announcement_id`, `user_id`) VALUES (?, ?)", req.ID, user.ID); err != nil {
-			c.Logger().Error(err)
-			return c.NoContent(http.StatusInternalServerError)
-		}
 	}
 
 	if err := tx.Commit(); err != nil {
@@ -1454,12 +1538,12 @@ func (h *handlers) GetAnnouncementDetail(c echo.Context) error {
 		return c.String(http.StatusNotFound, "No such announcement.")
 	}
 
-	var registrationCount int
-	if err := tx.Get(&registrationCount, "SELECT COUNT(*) FROM `registrations` WHERE `course_id` = ? AND `user_id` = ?", announcement.CourseID, userID); err != nil {
+	var registrationExists bool
+	if err := tx.Get(&registrationExists, "SELECT EXISTS(SELECT 1 FROM `registrations` WHERE `course_id` = ? AND `user_id` = ?)", announcement.CourseID, userID); err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
-	if registrationCount == 0 {
+	if !registrationExists {
 		return c.String(http.StatusNotFound, "No such announcement.")
 	}
 
@@ -1473,5 +1557,7 @@ func (h *handlers) GetAnnouncementDetail(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	return c.JSON(http.StatusOK, announcement)
+	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
+	c.Response().WriteHeader(http.StatusOK)
+	return json.NewEncoder(c.Response()).Encode(announcement)
 }

@@ -4,12 +4,15 @@ go 1.17
 
 require (
 	github.com/go-sql-driver/mysql v1.6.0
+	github.com/goccy/go-json v0.7.8
 	github.com/gorilla/sessions v1.2.1
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/labstack/echo-contrib v0.11.0
 	github.com/labstack/echo/v4 v4.5.0
 	github.com/oklog/ulid/v2 v2.0.2
+	github.com/zhangyunhao116/skipmap v0.7.0
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
+	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 )
 
 require (
@@ -21,6 +24,9 @@ require (
 	github.com/mattn/go-isatty v0.0.12 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect
+	github.com/zhangyunhao116/fastrand v0.1.0 // indirect
+	github.com/zhangyunhao116/sbconv v0.2.1 // indirect
+	github.com/zhangyunhao116/wyhash v0.3.2 // indirect
 	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4 // indirect
 	golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1 // indirect
 	golang.org/x/text v0.3.6 // indirect

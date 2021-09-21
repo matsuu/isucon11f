@@ -8,7 +8,7 @@ set -ex
 )
 
 # mysql
-sudo mysql -e "TRUNCATE TABLE performance_schema.events_statements_summary_by_digest"
+sudo mysql -e "CALL sys.ps_truncate_all_tables(FALSE)"
 #sudo rm -f /var/log/mysql/mysql-slow.log
 #sudo mysqladmin flush-logs
 
