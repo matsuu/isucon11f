@@ -1,38 +1,40 @@
 cnt	sum	min	avg	max	sumLock	sumRows	avgRows	db	query
-15786	47.42562	0.00023	0.003004283	0.0771206	2.302663	307011	19.4483	isucholar	SELECT `announcements`.`id`, `courses`.`id` AS `course_id`, `courses`.`name` AS `course_name`, `announcements`.`title`, NOT `unread_announcements`.`is_deleted` AS `unread` FROM `announcements` JOIN `courses` ON `announcements`.`course_id` = `courses`.`id` JOIN `registrations` ON `courses`.`id` = `registrations`.`course_id` JOIN `unread_announcements` ON `announcements`.`id` = `unread_announcements`.`announcement_id` WHERE 1=1 AND `unread_announcements`.`user_id` = '01FF6J8XPBRTDJ5B18AZRHVPYK' AND `registrations`.`user_id` = '01FF6J8XPBRTDJ5B18AZRHVPYK' ORDER BY `announcements`.`id` DESC LIMIT 21 OFFSET 0
-36058	27.7917244	0.0001506	0.00077075	0.1063976	3.705918	105038	2.9130	isucholar	SELECT `classes`.*, `submissions`.`user_id` IS NOT NULL AS `submitted` FROM `classes` LEFT JOIN `submissions` ON `classes`.`id` = `submissions`.`class_id` AND `submissions`.`user_id` = '01FF6J8XKWX92XCJP0QRSVPYV1' WHERE `classes`.`course_id` = '01FG45VJQWW4BM3BZVAA497YCT' ORDER BY `classes`.`part`
-8922	17.0049607	0.0001672	0.001905958	0.043648	1.162076	370186	41.4914	isucholar	SELECT IFNULL(SUM(`submissions`.`score`), 0) AS `total_score` FROM `registrations` LEFT JOIN `classes` ON `registrations`.`course_id` = `classes`.`course_id` LEFT JOIN `submissions` ON `registrations`.`user_id` = `submissions`.`user_id` AND `submissions`.`class_id` = `classes`.`id` WHERE `registrations`.`course_id` = '01FG45VJPYQJ8R2458ASSCF7FW' GROUP BY `registrations`.`user_id`
-38612	16.7974411	0.0001089	0.000435031	0.0772962	2.764383	0	0.0000	isucholar	UPDATE `unread_announcements` SET `is_deleted` = true WHERE `announcement_id` = '01FG45VQN3HVSKC71EFHG7J3B5' AND `user_id` = '01FF6J8XVDPBBB1D1KX39K6V01'
-35957	16.4858957	7.91e-05	0.000458489	0.0929051	2.981768	0	0.0000	isucholar	INSERT INTO `submissions` (`user_id`, `class_id`, `file_name`) VALUES ('01FF6J8XPC05RME16PVV44EFTR', '01FG45VPBDDBD8VFBNAJZDECXG', 'コミュニケーションサイエンスB_コミュニケーションサイエンスB 第4回講義_S01721.pdf') ON DUPLICATE KEY UPDATE `file_name` = VALUES(`file_name`)
-38609	16.4225425	0.0001038	0.000425355	0.060716	4.521326	38612	1.0001	isucholar	SELECT `announcements`.`id`, `courses`.`id` AS `course_id`, `courses`.`name` AS `course_name`, `announcements`.`title`, `announcements`.`message`, NOT `unread_announcements`.`is_deleted` AS `unread` FROM `announcements` JOIN `courses` ON `courses`.`id` = `announcements`.`course_id` JOIN `unread_announcements` ON `unread_announcements`.`announcement_id` = `announcements`.`id` WHERE `announcements`.`id` = '01FG45VQN3HVSKC71EFHG7J3B5' AND `unread_announcements`.`user_id` = '01FF6J8XW4YAHKAAJ6F4ZKPFHH'
-34614	13.0394741	0.0001243	0.00037671	0.0911465	4.024125	0	0.0000	isucholar	UPDATE `submissions` JOIN `users` ON `users`.`id` = `submissions`.`user_id` SET `score` = 72 WHERE `users`.`code` = 'S00730' AND `class_id` = '01FG45VNT636AYYNPV4ZS4KZGK'
-49	12.9825696	0.0004633	0.2649504	0.7055399	0.013469	3937	80.3469	isucholar	SELECT IFNULL(SUM(`submissions`.`score` * `courses`.`credit`), 0) / 100 / `credits`.`credits` AS `gpa` FROM `registrations` JOIN (     SELECT `registrations`.`user_id`, SUM(`courses`.`credit`) AS `credits`     FROM `registrations`     JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` AND `courses`.`status` = 'closed'     GROUP BY `registrations`.`user_id` ) AS `credits` ON `credits`.`user_id` = `registrations`.`user_id` JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` AND `courses`.`status` = 'closed' LEFT JOIN `classes` ON `courses`.`id` = `classes`.`course_id` LEFT JOIN `submissions` ON `registrations`.`user_id` = `submissions`.`user_id` AND `submissions`.`class_id` = `classes`.`id` GROUP BY `registrations`.`user_id`
-47123	10.7343069	5.73e-05	0.000227793	0.0498693	3.326341	47122	1.0000	isucholar	SELECT EXISTS(SELECT 1 FROM `registrations` WHERE `course_id` = '01FG45VS4X5SSWBZ9M0QCA2SGJ' AND `user_id` = '01FF6J8Y04BT9M781HEDFGKEPE')
-35961	8.5549621	6.83e-05	0.000237895	0.0496595	2.513018	35962	1.0000	isucholar	SELECT EXISTS(SELECT 1 FROM `registrations` WHERE `user_id` = '01FF6J8XW32NKEVF5VG9CW6D4V' AND `course_id` = '01FG45VSJT5P1WQKE9798KHMQ3')
-37451	7.5636949	5.5e-05	0.000201962	0.0371138	2.15393	37451	1.0000	isucholar	SELECT `submission_closed` FROM `classes` WHERE `id` = '01FG45W0T5QYAZSZFE7EVP5SGG' FOR SHARE
-36061	7.1116522	6.63e-05	0.000197211	0.0438891	2.490509	36062	1.0000	isucholar	SELECT EXISTS(SELECT id FROM `courses` WHERE `id` = '01FG45W2SKCZB40KVCP24J5QD9')
-35964	6.0664484	5.72e-05	0.000168681	0.0235573	2.134341	35966	1.0001	isucholar	SELECT `status` FROM `courses` WHERE `id` = '01FG45VYXEG32DSG8KYV7HYF0Q' FOR SHARE
-13238	5.8068828	0.0001485	0.000438652	0.0320815	1.306248	56110	4.2386	isucholar	SELECT C.id, C.part, C.title, S.score FROM `classes` C LEFT JOIN submissions S ON C.id = S.class_id AND S.user_id = '01FF6J8XSYXRAR4TG0TSJ4678H' WHERE C.`course_id` = '01FG45VJQWW4BM3BZVAA497YCT' ORDER BY C.`part` DESC
-2965	5.6401377	0.0003151	0.001902238	0.0355282	0.335595	33492	11.2958	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 AND `courses`.`period` = 4 AND `courses`.`day_of_week` = 'friday' ORDER BY `courses`.`code` LIMIT 21 OFFSET 0
-83146	5.1301613	1.45e-05	6.17e-05	0.008572	0	0	0.0000	isucholar	COMMIT
-15845	4.8475557	0.0001053	0.000305935	0.0708179	1.21081	15848	1.0002	isucholar	SELECT COUNT(1) FROM `unread_announcements` WHERE `user_id` = '01FF6J8XPBRTDJ5B18AZRHVPYK' AND NOT `is_deleted`
-1634	2.8669974	0.000141	0.001754588	0.0793229	0.138922	0	0.0000	isucholar	INSERT INTO `unread_announcements` (announcement_id, user_id) SELECT '01FG45VQT9K60BJM2VEZZJANWB', user_id FROM `registrations` WHERE `course_id` = '01FG45VJRV8WVSCDWT6WF21DKM'
-8510	2.7616618	5.43e-05	0.000324519	0.0414413	0.673142	0	0.0000	isucholar	INSERT INTO `registrations` (`course_id`, `user_id`) VALUES ('01FG45VT8Z6S9THFP0QCYWEYN7', '01FF6J8XPQX799RK2A8286J166') ON DUPLICATE KEY UPDATE `course_id` = VALUES(`course_id`), `user_id` = VALUES(`user_id`)
-83187	2.7380223	9.1e-06	3.2914e-05	0.0099725	0	0	0.0000	isucholar	START TRANSACTION
-575	2.4996953	0.0002525	0.004347296	0.0317794	0.063877	192	0.3339	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 AND `users`.`name` = '加藤 海斗' ORDER BY `courses`.`code` LIMIT 21 OFFSET 0
-2681	1.9684173	0.0002205	0.00073421	0.0357585	0.294443	55159	20.5740	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 AND `courses`.`type` = 'liberal-arts' ORDER BY `courses`.`code` LIMIT 21 OFFSET 20
-2324	1.9115115	0.0001709	0.000822509	0.0485312	0.266721	38039	16.3679	isucholar	SELECT `courses`.id, courses.name, users.name AS teacher, courses.period, courses.day_of_week FROM `courses` JOIN `registrations` ON `courses`.`id` = `registrations`.`course_id` JOIN users ON courses.teacher_id = users.id WHERE `courses`.`status` != 'closed' AND `registrations`.`user_id` = '01FF6J8XZF3MBRCJCNEBMDNVCH'
-910	1.8919486	0.0002297	0.002079064	0.0276541	0.110353	12109	13.3066	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 AND ((1=1 AND `courses`.`name` LIKE '%芸術%') OR (1=1 AND `courses`.`keywords` LIKE '%芸術%')) ORDER BY `courses`.`code` LIMIT 21 OFFSET 0
-2318	1.5708562	0.0001365	0.000677677	0.047108	0.192068	37121	16.0142	isucholar	SELECT `courses`.* FROM `courses` JOIN `registrations` ON `courses`.`id` = `registrations`.`course_id` WHERE `courses`.`status` != 'closed' AND `registrations`.`user_id` = '01FF6J8Y0TB4ENE27YTZ2ZN6QA'
-8520	1.5172109	6.43e-05	0.000178076	0.028243	0.495593	8524	1.0005	isucholar	SELECT * FROM `courses` WHERE `id` = '01FG45VSDM6R7RP6ENB0FCCY8W' FOR SHARE
-1651	1.1840688	6.72e-05	0.000717182	0.0417209	0.12172	0	0.0000	isucholar	INSERT INTO `classes` (`id`, `course_id`, `part`, `title`, `description`) VALUES ('01FG45W1BVFADN8QSK8N02Z5CY', '01FG45VK030X8768W9TPADG6AP', 5, 'コンピュータ設計概論 第5回講義', 'コンピュータ設計概論 の講義です。課題は講義中に出題するクイズへの回答を提出してください。')
-1633	1.176336	9.1e-05	0.000720352	0.0638366	0.134793	0	0.0000	isucholar	INSERT INTO `announcements` (`id`, `course_id`, `title`, `message`) VALUES ('01FG45WZH30DGAA15Y8GCZX4ZF', '01FG45W2Q98EJBZG37DKGVSPBK', '講義追加: 新規講義', '講義が新しく追加されました: 新規講義\n量子アルゴリズム科学A 第三回の講義です。今日のMTG-Room IDは 809-344-6246 です。課題は講義の内容について300字以下でまとめてください。')
-1501	0.9026678	0.0001225	0.000601377	0.0541671	0.126965	34879	23.2372	isucholar	SELECT `submissions`.`user_id`, `submissions`.`file_name`, `users`.`code` AS `user_code` FROM `submissions` JOIN `users` ON `users`.`id` = `submissions`.`user_id` WHERE `class_id` = '01FG45VK187RDG6XP366TSTNJF'
-790	0.5927371	0.0001177	0.0007503	0.0345094	0.073194	0	0.0000	isucholar	INSERT INTO `courses` (`id`, `code`, `type`, `name`, `description`, `credit`, `period`, `day_of_week`, `teacher_id`, `keywords`) VALUES ('01FG45W3EGCQMVPQYCBTAS7QMS', 'L0071', 'liberal-arts', '文学基礎第一', '本講義では出席を毎回取る。成績は出席と課題の提出状況により判断する。', 2, 4, 'thursday', '01FF6J8XFX45BT4DGAMXS3VDA5', '文学 基礎')
-2343	0.5688862	0.0001112	0.000242802	0.0185621	0.21359	2340	0.9987	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE `courses`.`id` = '01FG45VJQCZWXGQYBW8HPXNAPW'
-1500	0.3896031	7.61e-05	0.000259735	0.0314419	0.116928	0	0.0000	isucholar	UPDATE `classes` SET `submission_closed` = true WHERE `id` = '01FG45W0B3SJDKV49R37388APN'
-1502	0.3491593	6.56e-05	0.000232462	0.0202242	0.105308	1502	1.0000	isucholar	SELECT COUNT(id) FROM `classes` WHERE `id` = '01FG45VZY6WB61D3JA8KXNCHQT' FOR UPDATE
-6	0.2874948	0.0001525	0.0479158	0.1424908	0.021836	0	0.0000	isucholar	"INSERT INTO `users` (`id`, `code`, `name`, `hashed_password`, `type`) VALUES
+18117	84.3053063	0.0001841	0.004653381	0.1849005	2.66636	354808	19.5843	isucholar	SELECT `announcements`.`id`, `courses`.`id` AS `course_id`, `courses`.`name` AS `course_name`, `announcements`.`title`, `unread_announcements`.`announcement_id` IS NOT NULL AS `unread` FROM `announcements` JOIN `courses` ON `announcements`.`course_id` = `courses`.`id` JOIN `registrations` ON `courses`.`id` = `registrations`.`course_id` LEFT JOIN `unread_announcements` ON `announcements`.`id` = `unread_announcements`.`announcement_id` AND `unread_announcements`.`user_id` = '01FF6J8XVRAXDYKQE8S4XECK7K' WHERE 1=1 AND `registrations`.`user_id` = '01FF6J8XVRAXDYKQE8S4XECK7K' ORDER BY `announcements`.`id` DESC LIMIT 21 OFFSET 80
+38911	24.8076931	0.0001168	0.000637549	0.1507133	4.574458	38907	0.9999	isucholar	SELECT `announcements`.`id`, `courses`.`id` AS `course_id`, `courses`.`name` AS `course_name`, `announcements`.`title`, `announcements`.`message`, `unread_announcements`.`announcement_id` IS NOT NULL AS `unread` FROM `announcements` JOIN `courses` ON `courses`.`id` = `announcements`.`course_id` LEFT JOIN `unread_announcements` ON `unread_announcements`.`announcement_id` = `announcements`.`id` AND `unread_announcements`.`user_id` = '01FF6J8Y0M23CGSAJ6WE7NRNVD' WHERE `announcements`.`id` = '01FGBP9E3588T4BAFP75PMD6QG'
+36341	21.8055031	0.0001503	0.000600024	0.061787	3.852092	106712	2.9364	isucholar	SELECT `classes`.id, classes.part, classes.title, classes.description, classes.submission_closed, `submissions`.`user_id` IS NOT NULL AS `submitted` FROM `classes` LEFT JOIN `submissions` ON `classes`.`id` = `submissions`.`class_id` AND `submissions`.`user_id` = '01FF6J8XSXAXG5V7C6KVC6K64S' WHERE `classes`.`course_id` = '01FGBP85FAZ915EWP4Z6G6NJ6Y' ORDER BY `classes`.`part`
+18170	16.3722104	0.0001	0.000901057	0.1391632	1.274924	18171	1.0001	isucholar	SELECT COUNT(user_id) FROM `unread_announcements` WHERE `user_id` = '01FF6J8XPZAGDKQYWA6VP1JBN8'
+47455	16.2804573	6.19e-05	0.000343071	0.0815021	3.486758	47452	0.9999	isucholar	SELECT EXISTS(SELECT 1 FROM `registrations` WHERE `course_id` = '01FGBP85FQ5YS82TCTT2YPD7H5' AND `user_id` = '01FF6J8XZXFQBQNJ8G8PRJ8GAF')
+36271	14.4758697	8.22e-05	0.000399103	0.082045	2.962431	36274	1.0001	isucholar	SELECT code FROM users JOIN `registrations` ON users.id = registrations.user_id WHERE `user_id` = '01FF6J8XG2TF58PYQ89GRVSNM6' AND `course_id` = '01FGBP8C68SA7FDAXPEJNQBK3P'
+2441	11.3750436	0.0001777	0.004659993	0.0856535	0.269478	40329	16.5215	isucholar	SELECT `courses`.id, courses.name, users.name AS teacher, courses.period, courses.day_of_week FROM `courses` JOIN `registrations` ON `courses`.`id` = `registrations`.`course_id` JOIN users ON courses.teacher_id = users.id WHERE `courses`.`status` != 'closed' AND `registrations`.`user_id` = '01FF6J8XSGF88PJD4QZ5SEPX0Q'
+38912	11.2546643	8.46e-05	0.000289233	0.1348612	2.488539	0	0.0000	isucholar	DELETE FROM `unread_announcements` WHERE `announcement_id` = '01FGBP9F4Z6S89SAWX1SBT1EEK' AND `user_id` = '01FF6J8XJW6108N2PQ2G14SYAG'
+36266	10.9646525	6.16e-05	0.000302339	0.0616282	2.93779	0	0.0000	isucholar	INSERT INTO `submissions` (`user_id`, `class_id`, `file_name`) VALUES ('01FF6J8XSQ7C5BGBX3HCD39YEY', '01FGBP88KAQF0F0Z2CJFMYT51M', '新規講義_渡辺 天音.pdf') ON DUPLICATE KEY UPDATE `file_name` = VALUES(`file_name`)
+16938	9.1037779	0.000155	0.000537476	0.0439523	1.704149	73230	4.3234	isucholar	SELECT C.id, C.part, C.title, S.score FROM `classes` C LEFT JOIN submissions S ON C.id = S.class_id AND S.user_id = '01FF6J8XPXNTGDK66KEWCHHTYK' WHERE C.`course_id` = '01FGBP85TWYVRT8HPH7R351EZK' ORDER BY C.`part` DESC
+2437	8.8397774	0.0001407	0.003627319	0.0472268	0.196966	39439	16.1834	isucholar	SELECT `courses`.* FROM `courses` JOIN `registrations` ON `courses`.`id` = `registrations`.`course_id` WHERE `courses`.`status` != 'closed' AND `registrations`.`user_id` = '01FF6J8XPYJ0DCFVMN3MR5GRAY'
+37804	8.2389909	5.74e-05	0.000217939	0.043552	2.243683	37790	0.9996	isucholar	SELECT `submission_closed` FROM `classes` WHERE `id` = '01FGBP951GESP2ZS1FBCZ6YVZ6' FOR SHARE
+36340	6.4580451	6.26e-05	0.000177711	0.0250874	2.545294	36334	0.9998	isucholar	SELECT EXISTS(SELECT id FROM `courses` WHERE `id` = '01FGBP8P62W5HKRRZ351N6DQNZ')
+36281	6.1375387	6.03e-05	0.000169166	0.0301204	2.156119	36277	0.9999	isucholar	SELECT `status` FROM `courses` WHERE `id` = '01FGBP8C44H10NCBMBSMTP2EMM' FOR SHARE
+10644	6.0638765	0.0001292	0.000569699	0.0695859	1.136463	443368	41.6543	isucholar	SELECT IFNULL(score,0) FROM registrations LEFT JOIN total_scores USING (user_id, course_id) where registrations.course_id = '01FGBP85SXJ7AZ3DTX57DVKMFP'
+2763	4.6953559	0.0002387	0.001699368	0.0411456	0.301968	30447	11.0195	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 AND `courses`.`period` = 5 AND `courses`.`day_of_week` = 'tuesday' ORDER BY `courses`.`code` LIMIT 21 OFFSET 0
+45128	3.0816087	2e-05	6.8285e-05	0.0179372	0	0	0.0000	isucholar	COMMIT
+1365	2.7995978	0.0002862	0.002050987	0.0707775	0.342651	0	0.0000	isucholar	INSERT INTO total_scores (user_id, course_id, score) SELECT registrations.user_id, registrations.course_id, ELT(FIELD(code,'S03528','S00153'),55,56) FROM users JOIN registrations ON users.id = registrations.user_id JOIN classes ON registrations.course_id = classes.course_id WHERE users.code IN ('S03528','S00153') AND classes.id = '01FGBP908X1AR0F80JJX5FBMFC' ON DUPLICATE KEY UPDATE score = score + VALUES(score)
+1679	2.7078189	0.0001276	0.001612756	0.1021933	0.137307	0	0.0000	isucholar	INSERT INTO `unread_announcements` (announcement_id, user_id) SELECT '01FGBP9F0P84N422YWX6ZPBTG2', user_id FROM `registrations` WHERE `course_id` = '01FGBP8KNZNC3KB9SK1HXDWDET'
+673	2.6491262	0.0002652	0.003936294	0.0390286	0.071189	149	0.2214	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 AND `users`.`name` = '伊藤 千晶' ORDER BY `courses`.`code` LIMIT 21 OFFSET 0
+3071	2.3636263	0.0002323	0.00076966	0.0307707	0.32137	63392	20.6421	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 AND `courses`.`type` = 'liberal-arts' ORDER BY `courses`.`code` LIMIT 21 OFFSET 0
+1365	2.2901135	0.0002503	0.001677738	0.0624796	0.254016	0	0.0000	isucholar	UPDATE `submissions` JOIN `users` ON `users`.`id` = `submissions`.`user_id` SET `score` = ELT(FIELD(code,'S03701','S02859','S00784','S04240','S01754','S04927','S01759','S04403','S01726','S00020','S02083','S04382','S00591','S00128','S03235','S02995','S02630','S00187','S00153','S02032','S02691','S00443','S04159','S00908','S02257','S02820','S04257','S02053','S04704','S02625','S04612','S03800','S03641','S00927','S03612','S04427','S00965','S00130','S00790','S03004','S00789','S02603','S03743','S01293','S00000','S00639','S00243','S01779','S02673','S02689'),36,46,61,46,57,65,57,76,65,45,65,61,69,33,71,79,70,71,51,82,52,56,44,53,45,59,60,60,65,58,80,77,56,71,53,52,60,78,66,51,55,64,53,49,59,75,57,47,68,43) WHERE `users`.`code` IN ('S03701','S02859','S00784','S04240','S01754','S04927','S01759','S04403','S01726','S00020','S02083','S04382','S00591','S00128','S03235','S02995','S02630','S00187','S00153','S02032','S02691','S00443','S04159','S00908','S02257','S02820','S04257','S02053','S04704','S02625','S04612','S03800','...
+301	1.7390633	0.0002011	0.005777618	0.0356946	0.029034	16952	56.3189	isucholar	SELECT `courses`.* FROM `registrations` JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` WHERE `user_id` = '01FF6J8XHY4ZE95WQZ82G9DNHM'
+45157	1.5905386	1.09e-05	3.5222e-05	0.0134347	0	0	0.0000	isucholar	START TRANSACTION
+870	1.5622618	0.0002596	0.001795703	0.0346554	0.103151	11416	13.1218	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 AND ((1=1 AND `courses`.`name` LIKE '%サイエンス%') OR (1=1 AND `courses`.`keywords` LIKE '%サイエンス%')) ORDER BY `courses`.`code` LIMIT 21 OFFSET 20
+1693	1.330021	7.55e-05	0.0007856	0.0441005	0.122601	0	0.0000	isucholar	INSERT INTO `classes` (`id`, `course_id`, `part`, `title`, `description`) VALUES ('01FGBP95XM42BTMBYFNNG1WQA7', '01FGBP8NPPSAMZY5J8WQT3A7GJ', 1, '新規講義', '人間文化デザイン導入 の講義です。課題は講義の内容についてあなたが調べたことについて500字以上1000字以内でまとめてください。')
+8547	1.2950209	6.83e-05	0.000151517	0.0204487	0.494082	8541	0.9993	isucholar	SELECT * FROM `courses` WHERE `id` = '01FGBP8M39XWPWX6733FN5KHEK' FOR SHARE
+1680	1.2761742	7.81e-05	0.000759627	0.086566	0.126836	0	0.0000	isucholar	INSERT INTO `announcements` (`id`, `course_id`, `title`, `message`) VALUES ('01FGBP9K0A61VCKZZAX0371YB0', '01FGBP8M1TX2FCRSGHKE3WN48E', '講義追加: 法学サイエンスC 第4回講義', '講義が新しく追加されました: 法学サイエンスC 第4回講義\n法学サイエンスC 第4回の講義です。課題は講義中に出題するクイズへの回答を提出してください。')
+1548	1.1987844	9.32e-05	0.000774408	0.078293	0.161252	0	0.0000	isucholar	INSERT INTO `registrations` (`course_id`, `user_id`) VALUES ('01FGBP85SM8RD1Q59CCM4TG308', '01FF6J8XK9KQBQ0QNA1M0AS8S7'),('01FGBP85SSHBW5BBS0CMNEQB9Q', '01FF6J8XK9KQBQ0QNA1M0AS8S7') ON DUPLICATE KEY UPDATE `course_id` = VALUES(`course_id`), `user_id` = VALUES(`user_id`)
+253	0.9126408	0.0002725	0.003607275	0.0236573	0.057035	0	0.0000	isucholar	INSERT INTO `user_scores` (`id`, `score`, `credit`) SELECT R.user_id, IFNULL(SUM(score * credit),0), credit FROM registrations R join courses CO ON R.course_id = CO.id LEFT JOIN classes CL ON CO.id = CL.course_id LEFT JOIN submissions S ON R.user_id = S.user_id AND S.class_id = CL.id WHERE CO.id = '01FGBP8SP28NGD245NYMVKWNJ6' GROUP BY R.user_id ON DUPLICATE KEY UPDATE score = score + VALUES(`score`), credit = credit + VALUES(`credit`)
+812	0.6558289	0.0001044	0.000807671	0.0342847	0.076582	0	0.0000	isucholar	INSERT INTO `courses` (`id`, `code`, `type`, `name`, `description`, `credit`, `period`, `day_of_week`, `teacher_id`, `keywords`) VALUES ('01FGBP956KRSDTBWRV24NJB2W2', 'L0139', 'liberal-arts', '芸術デザイン第二', '本講義では課題提出をもって出席の代わりとする。成績は課題の提出状況により判断する。', 2, 5, 'tuesday', '01FF6J8XFXA9C30FN4BTMWDR6A', '芸術 デザイン')
+2438	0.5344456	0.0001081	0.000219214	0.016952	0.21642	2439	1.0004	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE `courses`.`id` = '01FGBP85SYNXJZ5TYM64SPXBP3'
+888	0.5203667	8.76e-05	0.000585998	0.054506	0.101886	0	0.0000	isucholar	INSERT INTO `registrations` (`course_id`, `user_id`) VALUES ('01FGBP8KFN593GM59Q6K64EPCG', '01FF6J8XTF3MKAWCWY4HNF4C9V') ON DUPLICATE KEY UPDATE `course_id` = VALUES(`course_id`), `user_id` = VALUES(`user_id`)
+1536	0.4421116	8.95e-05	0.000287833	0.0243667	0.098979	0	0.0000	isucholar	UPDATE `classes` SET `submission_closed` = true WHERE `id` = '01FGBP9SYKJM7HJ3MFHZE3CYD8'
+1537	0.3375858	8.33e-05	0.000219639	0.0208402	0.112834	1537	1.0000	isucholar	SELECT COUNT(id) FROM `classes` WHERE `id` = '01FGBP9WVD0JHM5GYXQMH19QZZ' FOR UPDATE
+6	0.2950937	0.0001362	0.049182283	0.1524862	0.025993	0	0.0000	isucholar	"INSERT INTO `users` (`id`, `code`, `name`, `hashed_password`, `type`) VALUES
 ('01FF6J8XFYRAYQ8RQCGQCHHT34','S00000','isucon(学生)','$2a$04$ryz7PlekloOgUSQCFyvPoeo1Q9RYfcrUTj6EvUNSqfDkuIIUVKBWO','student'),
 ('01FF6J8XFYAFNEX1EPEEQ2NDQB','S00001','渡辺 真美','$2a$04$GYUQPXsxgtOCEEjoSV0wM.Q1mJ6LRi9cIJIUPFT7uPCJ.eZyBM2bG','student'),
 ('01FF6J8XFY4DE99G3NW36HPBGA','S00002','山崎 匠','$2a$04$efF8V4eGPMhoVlv7OKJqXuGCvIH9ZLGtZvwRYvJ/6tSKHIs4cp8oG','student'),
@@ -41,15 +43,258 @@ cnt	sum	min	avg	max	sumLock	sumRows	avgRows	db	query
 ('01FF6J8XFZP5W330HGCSW7SD7E','S00005','藤田 友香','$2a$04$dPW6RnSJ2phfBVr2gzzlK.OgGuOx3.iiwzzVzjd9WF1lT.bovUkOq','student'),
 ('01FF6J8XFZVB3MRCXZ3ZVWRF3C','S00006','宮里 麻美','$2a$04$/oakixGjy5D.UKMV4BwKHeiHDSWYhTzoTtoF2Dp1QFq6mDq7DQoiK','student'),
 ('01FF6J8XFZEP32QBXGMSVDXA7F','S0000..."
-1635	0.287456	7.27e-05	0.000175814	0.0151859	0.110241	1635	1.0000	isucholar	SELECT COUNT(id) FROM `courses` WHERE `id` = '01FG45VVX34V6N6PHW4DDM2E07'
-1653	0.2594291	6.87e-05	0.000156944	0.0168038	0.097214	1652	0.9994	isucholar	SELECT status FROM `courses` WHERE `id` = '01FG45WEP9G36F0Y6QF204Z46X' FOR SHARE
-639	0.1791398	0.000142	0.000280343	0.0117743	0.050388	0	0.0000	isucholar	UPDATE `courses` SET `status` = 'in-progress' WHERE `id` = '01FG45W3VS9C79R4S5463XEV29'
-248	0.1427616	0.0002296	0.000575651	0.0017094	0.023053	13256	53.4516	isucholar	SELECT `courses`.* FROM `registrations` JOIN `courses` ON `registrations`.`course_id` = `courses`.`id` WHERE `user_id` = '01FF6J8XSG8CQJPGVTSPE78A5M'
-929	0.1306689	6.31e-05	0.000140655	0.0036434	0.063324	929	1.0000	isucholar	SELECT `code` FROM `users` WHERE `id` = '01FF6J8XFS3906KB5YNKHSNQWG'
-43	0.1244767	0.0003138	0.002894806	0.0055631	0.005125	875	20.3488	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 ORDER BY `courses`.`code` LIMIT 21 OFFSET 420
-239	0.0412345	9.06e-05	0.000172529	0.0005267	0.017836	239	1.0000	isucholar	SELECT * FROM `users` WHERE `code` = 'S04484'
-2	0.0314039	0.0101478	0.01570195	0.0212561	0.000326	0	0.0000	isucholar	ALTER TABLE unread_announcements ADD INDEX(user_id, is_deleted)
-2	0.0267436	0.004432	0.0133718	0.0223116	0.000228	0	0.0000	isucholar	"-- CREATEと逆順
+1696	0.2894878	7.47e-05	0.000170688	0.0096733	0.10683	1692	0.9976	isucholar	SELECT status FROM `courses` WHERE `id` = '01FGBP8NQDHB18TED1MJ6MNAWS' FOR SHARE
+1681	0.2655021	7.49e-05	0.000157942	0.0147534	0.110473	1681	1.0000	isucholar	SELECT COUNT(id) FROM `courses` WHERE `id` = '01FGBP8NTP43XC4BTFXKFRYS7C'
+656	0.1937924	0.0001256	0.000295415	0.0192338	0.046525	0	0.0000	isucholar	UPDATE `courses` SET `status` = 'in-progress' WHERE `id` = '01FGBP8SANWJ0HM8PHGDJWWVFY'
+954	0.1384306	6.7e-05	0.000145105	0.0041461	0.065725	954	1.0000	isucholar	SELECT `code` FROM `users` WHERE `id` = '01FF6J8XSHF7TTEGES1C9CXSG1'
+44	0.1029864	0.0002747	0.0023406	0.0030143	0.004077	897	20.3864	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 ORDER BY `courses`.`code` LIMIT 21 OFFSET 740
+155	0.0941363	0.0002503	0.00060733	0.0135746	0.026749	0	0.0000	isucholar	INSERT INTO total_scores (user_id, course_id, score) SELECT registrations.user_id, registrations.course_id, ELT(FIELD(code,'S04309'),66) FROM users JOIN registrations ON users.id = registrations.user_id JOIN classes ON registrations.course_id = classes.course_id WHERE users.code IN ('S04309') AND classes.id = '01FGBP9KQ8FAJFJ8TN4W653F6D' ON DUPLICATE KEY UPDATE score = score + VALUES(score)
+155	0.0608111	0.0002641	0.000392329	0.0021622	0.019526	0	0.0000	isucholar	UPDATE `submissions` JOIN `users` ON `users`.`id` = `submissions`.`user_id` SET `score` = ELT(FIELD(code,'S04309'),60) WHERE `users`.`code` IN ('S04309') AND `class_id` = '01FGBP9N8DBH9DE736SM3DBVZB'
+246	0.0462789	8.73e-05	0.000188125	0.0011066	0.021011	244	0.9919	isucholar	SELECT * FROM `users` WHERE `code` = 'S01867'
+124	0.0356736	0.0001268	0.00028769	0.001861	0.008788	11391	91.8629	isucholar	SELECT score/100/credit AS gpa FROM user_scores
+2	0.0250844	0.0094603	0.0125422	0.0156241	0.000221	0	0.0000	isucholar	"-- master data
+CREATE TABLE `users`
+(
+    `id`              CHAR(26) PRIMARY KEY,
+    `code`            CHAR(6) UNIQUE              NOT NULL,
+    `name`            VARCHAR(255)                NOT NULL,
+    `hashed_password` BINARY(60)                  NOT NULL,
+    `type`            ENUM ('student', 'teacher') NOT NULL
+);
+
+CREATE TABLE `courses`
+(
+    `id`          CHAR(26) PRIMARY KEY,
+    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
+    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
+    `name`        VARCHAR(255)                                                  NOT NULL,
+    `description` TEXT                                                          NOT NULL,
+    `credit`      TINYINT UNSIGNED                                              NOT NULL,
+    `period`      TINYINT UNSIGNED                                              NOT NULL,
+    `day_of_week` ENUM ('monday', 'tuesday', 'wednesday', 'thursday', 'friday') NOT NULL,
+ ..."
+421	0.0250679	2.64e-05	5.9543e-05	0.0002084	0	0	0.0000	isucholar	SET time_zone='+00:00'
+2	0.0215442	0.0091802	0.0107721	0.012364	0.000305	0	0.0000	isucholar	"CREATE TABLE `courses`
+(
+    `id`          CHAR(26) PRIMARY KEY,
+    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
+    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
+    `name`        VARCHAR(255)                                                  NOT NULL,
+    `description` TEXT                                                          NOT NULL,
+    `credit`      TINYINT UNSIGNED                                              NOT NULL,
+    `period`      TINYINT UNSIGNED                                              NOT NULL,
+    `day_of_week` ENUM ('monday', 'tuesday', 'wednesday', 'thursday', 'friday') NOT NULL,
+    `teacher_id`  CHAR(26)                                                      NOT NULL,
+    `keywords`    TEXT                                                          NOT NULL,
+    `status`      ENUM ('registration', 'in-progress', 'closed')                NOT NULL DEFAULT 'registration'
+    -- CONSTRAINT FK_courses_teach..."
+2	0.0208777	0.0103152	0.01043885	0.0105625	0.000249	0	0.0000	isucholar	CREATE TABLE user_scores (id CHAR(26) PRIMARY KEY, score INT UNSIGNED NOT NULL DEFAULT 0, credit INT UNSIGNED NOT NULL DEFAULT 0)
+60	0.0208315	0.0002388	0.000347191	0.0004473	0.007335	150	2.5000	isucholar	SELECT `announcements`.`id`, `courses`.`id` AS `course_id`, `courses`.`name` AS `course_name`, `announcements`.`title`, `unread_announcements`.`announcement_id` IS NOT NULL AS `unread` FROM `announcements` JOIN `courses` ON `announcements`.`course_id` = `courses`.`id` JOIN `registrations` ON `courses`.`id` = `registrations`.`course_id` LEFT JOIN `unread_announcements` ON `announcements`.`id` = `unread_announcements`.`announcement_id` AND `unread_announcements`.`user_id` = '01FF6J8XQ2X39EXK7YCFGTFF77' WHERE 1=1 AND `announcements`.`course_id` = '01FGBP84TSY32ASY8CFYQ13D4Z' AND `registrations`.`user_id` = '01FF6J8XQ2X39EXK7YCFGTFF77' ORDER BY `announcements`.`id` DESC LIMIT 21 OFFSET 0
+2	0.0181419	0.0084365	0.00907095	0.0097054	0.000247	0	0.0000	isucholar	"CREATE TABLE `classes`
+(
+    `id`                CHAR(26) PRIMARY KEY,
+    `course_id`         CHAR(26)         NOT NULL,
+    `part`              TINYINT UNSIGNED NOT NULL,
+    `title`             VARCHAR(255)     NOT NULL,
+    `description`       TEXT             NOT NULL,
+    `submission_closed` TINYINT(1)       NOT NULL DEFAULT false,
+    UNIQUE KEY `idx_classes_course_id_part` (`course_id`, `part`)
+    -- CONSTRAINT FK_classes_course_id FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`)
+);
+
+CREATE TABLE `submissions`
+(
+    `user_id`   CHAR(26)     NOT NULL,
+    `class_id`  CHAR(26)     NOT NULL,
+    `file_name` VARCHAR(255) NOT NULL,
+    `score`     TINYINT UNSIGNED,
+    PRIMARY KEY (`user_id`, `class_id`)
+    -- CONSTRAINT FK_submissions_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+    -- CONSTRAINT FK_submissions_class_id FOREIGN KEY (`class_id`) REFERENCES `classes` (`id`)
+);
+
+CREATE TABLE `announcements`
+(
+    `id`         CHAR(26) PRIMARY KEY,
+    `course_id`  CHAR(26)     NOT NUL..."
+2	0.0153873	0.007478	0.00769365	0.0079093	0.000213	0	0.0000	isucholar	CREATE TABLE total_scores (user_id CHAR(26) NOT NULL, course_id CHAR(26) NOT NULL, score INT UNSIGNED NOT NULL DEFAULT 0, PRIMARY KEY(user_id, course_id))
+2	0.0142129	0.005588	0.00710645	0.0086249	0.000334	0	0.0000	isucholar	"CREATE TABLE `unread_announcements`
+(
+    `announcement_id` CHAR(26)   NOT NULL,
+    `user_id`         CHAR(26)   NOT NULL,
+    `is_deleted`      TINYINT(1) NOT NULL DEFAULT false,
+    PRIMARY KEY (`announcement_id`, `user_id`)
+    -- CONSTRAINT FK_unread_announcements_announcement_id FOREIGN KEY (`announcement_id`) REFERENCES `announcements` (`id`),
+    -- CONSTRAINT FK_unread_announcements_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+)"
+2	0.0139558	0.0061813	0.0069779	0.0077745	0.000232	0	0.0000	isucholar	"CREATE TABLE `announcements`
+(
+    `id`         CHAR(26) PRIMARY KEY,
+    `course_id`  CHAR(26)     NOT NULL,
+    `title`      VARCHAR(255) NOT NULL,
+    `message`    TEXT         NOT NULL
+    -- CONSTRAINT FK_announcements_course_id FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`)
+);
+
+CREATE TABLE `unread_announcements`
+(
+    `announcement_id` CHAR(26)   NOT NULL,
+    `user_id`         CHAR(26)   NOT NULL,
+    `is_deleted`      TINYINT(1) NOT NULL DEFAULT false,
+    PRIMARY KEY (`announcement_id`, `user_id`)
+    -- CONSTRAINT FK_unread_announcements_announcement_id FOREIGN KEY (`announcement_id`) REFERENCES `announcements` (`id`),
+    -- CONSTRAINT FK_unread_announcements_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+)"
+2	0.0138183	0.006187	0.00690915	0.0076313	0.000225	0	0.0000	isucholar	"CREATE TABLE `submissions`
+(
+    `user_id`   CHAR(26)     NOT NULL,
+    `class_id`  CHAR(26)     NOT NULL,
+    `file_name` VARCHAR(255) NOT NULL,
+    `score`     TINYINT UNSIGNED,
+    PRIMARY KEY (`user_id`, `class_id`)
+    -- CONSTRAINT FK_submissions_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+    -- CONSTRAINT FK_submissions_class_id FOREIGN KEY (`class_id`) REFERENCES `classes` (`id`)
+);
+
+CREATE TABLE `announcements`
+(
+    `id`         CHAR(26) PRIMARY KEY,
+    `course_id`  CHAR(26)     NOT NULL,
+    `title`      VARCHAR(255) NOT NULL,
+    `message`    TEXT         NOT NULL
+    -- CONSTRAINT FK_announcements_course_id FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`)
+);
+
+CREATE TABLE `unread_announcements`
+(
+    `announcement_id` CHAR(26)   NOT NULL,
+    `user_id`         CHAR(26)   NOT NULL,
+    `is_deleted`      TINYINT(1) NOT NULL DEFAULT false,
+    PRIMARY KEY (`announcement_id`, `user_id`)
+    -- CONSTRAINT FK_unread_announcements_announcement_id FOREIGN KEY (`announcement_id`) ..."
+2	0.0137514	0.0060025	0.0068757	0.0077489	0.000274	0	0.0000	isucholar	"CREATE TABLE `registrations`
+(
+    `course_id` CHAR(26),
+    `user_id`   CHAR(26),
+    PRIMARY KEY (`course_id`, `user_id`)
+    -- CONSTRAINT FK_registrations_course_id FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`),
+    -- CONSTRAINT FK_registrations_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+);
+
+CREATE TABLE `classes`
+(
+    `id`                CHAR(26) PRIMARY KEY,
+    `course_id`         CHAR(26)         NOT NULL,
+    `part`              TINYINT UNSIGNED NOT NULL,
+    `title`             VARCHAR(255)     NOT NULL,
+    `description`       TEXT             NOT NULL,
+    `submission_closed` TINYINT(1)       NOT NULL DEFAULT false,
+    UNIQUE KEY `idx_classes_course_id_part` (`course_id`, `part`)
+    -- CONSTRAINT FK_classes_course_id FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`)
+);
+
+CREATE TABLE `submissions`
+(
+    `user_id`   CHAR(26)     NOT NULL,
+    `class_id`  CHAR(26)     NOT NULL,
+    `file_name` VARCHAR(255) NOT NULL,
+    `score`     TINYINT UNSIGNED,
+    PRIMARY KEY (..."
+2	0.0062804	0.0025596	0.0031402	0.0037208	0.000103	0	0.0000	isucholar	"DROP TABLE IF EXISTS `users`;
+
+-- master data
+CREATE TABLE `users`
+(
+    `id`              CHAR(26) PRIMARY KEY,
+    `code`            CHAR(6) UNIQUE              NOT NULL,
+    `name`            VARCHAR(255)                NOT NULL,
+    `hashed_password` BINARY(60)                  NOT NULL,
+    `type`            ENUM ('student', 'teacher') NOT NULL
+);
+
+CREATE TABLE `courses`
+(
+    `id`          CHAR(26) PRIMARY KEY,
+    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
+    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
+    `name`        VARCHAR(255)                                                  NOT NULL,
+    `description` TEXT                                                          NOT NULL,
+    `credit`      TINYINT UNSIGNED                                              NOT NULL,
+    `period`      TINYINT UNSIGNED                                              NOT NULL,
+    `day_of_week` ENUM ('monday', 'tuesday', 'wednesday', 't..."
+2	0.0051239	0.0012895	0.00256195	0.0038344	0.000114	0	0.0000	isucholar	"DROP TABLE IF EXISTS `submissions`;
+DROP TABLE IF EXISTS `classes`;
+DROP TABLE IF EXISTS `registrations`;
+DROP TABLE IF EXISTS `courses`;
+DROP TABLE IF EXISTS `users`;
+
+-- master data
+CREATE TABLE `users`
+(
+    `id`              CHAR(26) PRIMARY KEY,
+    `code`            CHAR(6) UNIQUE              NOT NULL,
+    `name`            VARCHAR(255)                NOT NULL,
+    `hashed_password` BINARY(60)                  NOT NULL,
+    `type`            ENUM ('student', 'teacher') NOT NULL
+);
+
+CREATE TABLE `courses`
+(
+    `id`          CHAR(26) PRIMARY KEY,
+    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
+    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
+    `name`        VARCHAR(255)                                                  NOT NULL,
+    `description` TEXT                                                          NOT NULL,
+    `credit`      TINYINT UNSIGNED                                              NOT NULL,
+    `period`..."
+2	0.0046635	0.0014174	0.00233175	0.0032461	0.000204	0	0.0000	isucholar	"DROP TABLE IF EXISTS `classes`;
+DROP TABLE IF EXISTS `registrations`;
+DROP TABLE IF EXISTS `courses`;
+DROP TABLE IF EXISTS `users`;
+
+-- master data
+CREATE TABLE `users`
+(
+    `id`              CHAR(26) PRIMARY KEY,
+    `code`            CHAR(6) UNIQUE              NOT NULL,
+    `name`            VARCHAR(255)                NOT NULL,
+    `hashed_password` BINARY(60)                  NOT NULL,
+    `type`            ENUM ('student', 'teacher') NOT NULL
+);
+
+CREATE TABLE `courses`
+(
+    `id`          CHAR(26) PRIMARY KEY,
+    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
+    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
+    `name`        VARCHAR(255)                                                  NOT NULL,
+    `description` TEXT                                                          NOT NULL,
+    `credit`      TINYINT UNSIGNED                                              NOT NULL,
+    `period`      TINYINT UNSIGNED              ..."
+2	0.0044108	0.0014769	0.0022054	0.0029339	9.7e-05	0	0.0000	isucholar	"DROP TABLE IF EXISTS `courses`;
+DROP TABLE IF EXISTS `users`;
+
+-- master data
+CREATE TABLE `users`
+(
+    `id`              CHAR(26) PRIMARY KEY,
+    `code`            CHAR(6) UNIQUE              NOT NULL,
+    `name`            VARCHAR(255)                NOT NULL,
+    `hashed_password` BINARY(60)                  NOT NULL,
+    `type`            ENUM ('student', 'teacher') NOT NULL
+);
+
+CREATE TABLE `courses`
+(
+    `id`          CHAR(26) PRIMARY KEY,
+    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
+    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
+    `name`        VARCHAR(255)                                                  NOT NULL,
+    `description` TEXT                                                          NOT NULL,
+    `credit`      TINYINT UNSIGNED                                              NOT NULL,
+    `period`      TINYINT UNSIGNED                                              NOT NULL,
+    `day_of_week` ENUM ('mon..."
+2	0.0042432	0.0018376	0.0021216	0.0024056	0.000255	0	0.0000	isucholar	"-- CREATEと逆順
 DROP TABLE IF EXISTS `unread_announcements`;
 DROP TABLE IF EXISTS `announcements`;
 DROP TABLE IF EXISTS `submissions`;
@@ -76,203 +321,10 @@ CREATE TABLE `courses`
     `name`        VARCHAR(255)                                                  NOT NULL,
     `description` TEXT                                                          NOT NULL,
 ..."
-2	0.0262845	0.0113183	0.01314225	0.0149662	0.000255	0	0.0000	isucholar	"-- master data
-CREATE TABLE `users`
-(
-    `id`              CHAR(26) PRIMARY KEY,
-    `code`            CHAR(6) UNIQUE              NOT NULL,
-    `name`            VARCHAR(255)                NOT NULL,
-    `hashed_password` BINARY(60)                  NOT NULL,
-    `type`            ENUM ('student', 'teacher') NOT NULL
-);
-
-CREATE TABLE `courses`
-(
-    `id`          CHAR(26) PRIMARY KEY,
-    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
-    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
-    `name`        VARCHAR(255)                                                  NOT NULL,
-    `description` TEXT                                                          NOT NULL,
-    `credit`      TINYINT UNSIGNED                                              NOT NULL,
-    `period`      TINYINT UNSIGNED                                              NOT NULL,
-    `day_of_week` ENUM ('monday', 'tuesday', 'wednesday', 'thursday', 'friday') NOT NULL,
- ..."
-2	0.0252065	0.0122213	0.01260325	0.0129852	0.000282	0	0.0000	isucholar	"CREATE TABLE `courses`
-(
-    `id`          CHAR(26) PRIMARY KEY,
-    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
-    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
-    `name`        VARCHAR(255)                                                  NOT NULL,
-    `description` TEXT                                                          NOT NULL,
-    `credit`      TINYINT UNSIGNED                                              NOT NULL,
-    `period`      TINYINT UNSIGNED                                              NOT NULL,
-    `day_of_week` ENUM ('monday', 'tuesday', 'wednesday', 'thursday', 'friday') NOT NULL,
-    `teacher_id`  CHAR(26)                                                      NOT NULL,
-    `keywords`    TEXT                                                          NOT NULL,
-    `status`      ENUM ('registration', 'in-progress', 'closed')                NOT NULL DEFAULT 'registration',
-    CONSTRAINT FK_courses_teacher..."
-2	0.0249118	0.012266	0.0124559	0.0126458	0.000271	0	0.0000	isucholar	"CREATE TABLE `unread_announcements`
-(
-    `announcement_id` CHAR(26)   NOT NULL,
-    `user_id`         CHAR(26)   NOT NULL,
-    `is_deleted`      TINYINT(1) NOT NULL DEFAULT false,
-    PRIMARY KEY (`announcement_id`, `user_id`),
-    CONSTRAINT FK_unread_announcements_announcement_id FOREIGN KEY (`announcement_id`) REFERENCES `announcements` (`id`),
-    CONSTRAINT FK_unread_announcements_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-)"
-2	0.0239281	0.0116764	0.01196405	0.0122517	0.000237	0	0.0000	isucholar	"CREATE TABLE `registrations`
-(
-    `course_id` CHAR(26),
-    `user_id`   CHAR(26),
-    PRIMARY KEY (`course_id`, `user_id`),
-    CONSTRAINT FK_registrations_course_id FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`),
-    CONSTRAINT FK_registrations_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-);
-
-CREATE TABLE `classes`
-(
-    `id`                CHAR(26) PRIMARY KEY,
-    `course_id`         CHAR(26)         NOT NULL,
-    `part`              TINYINT UNSIGNED NOT NULL,
-    `title`             VARCHAR(255)     NOT NULL,
-    `description`       TEXT             NOT NULL,
-    `submission_closed` TINYINT(1)       NOT NULL DEFAULT false,
-    UNIQUE KEY `idx_classes_course_id_part` (`course_id`, `part`),
-    CONSTRAINT FK_classes_course_id FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`)
-);
-
-CREATE TABLE `submissions`
-(
-    `user_id`   CHAR(26)     NOT NULL,
-    `class_id`  CHAR(26)     NOT NULL,
-    `file_name` VARCHAR(255) NOT NULL,
-    `score`     TINYINT UNSIGNED,
-    PRIMARY KEY (`user_i..."
-2	0.0215822	0.009496	0.0107911	0.0120862	0.000224	0	0.0000	isucholar	"CREATE TABLE `announcements`
-(
-    `id`         CHAR(26) PRIMARY KEY,
-    `course_id`  CHAR(26)     NOT NULL,
-    `title`      VARCHAR(255) NOT NULL,
-    `message`    TEXT         NOT NULL,
-    CONSTRAINT FK_announcements_course_id FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`)
-);
-
-CREATE TABLE `unread_announcements`
-(
-    `announcement_id` CHAR(26)   NOT NULL,
-    `user_id`         CHAR(26)   NOT NULL,
-    `is_deleted`      TINYINT(1) NOT NULL DEFAULT false,
-    PRIMARY KEY (`announcement_id`, `user_id`),
-    CONSTRAINT FK_unread_announcements_announcement_id FOREIGN KEY (`announcement_id`) REFERENCES `announcements` (`id`),
-    CONSTRAINT FK_unread_announcements_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-)"
-2	0.0215226	0.0100094	0.0107613	0.0115132	0.000259	0	0.0000	isucholar	"CREATE TABLE `classes`
-(
-    `id`                CHAR(26) PRIMARY KEY,
-    `course_id`         CHAR(26)         NOT NULL,
-    `part`              TINYINT UNSIGNED NOT NULL,
-    `title`             VARCHAR(255)     NOT NULL,
-    `description`       TEXT             NOT NULL,
-    `submission_closed` TINYINT(1)       NOT NULL DEFAULT false,
-    UNIQUE KEY `idx_classes_course_id_part` (`course_id`, `part`),
-    CONSTRAINT FK_classes_course_id FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`)
-);
-
-CREATE TABLE `submissions`
-(
-    `user_id`   CHAR(26)     NOT NULL,
-    `class_id`  CHAR(26)     NOT NULL,
-    `file_name` VARCHAR(255) NOT NULL,
-    `score`     TINYINT UNSIGNED,
-    PRIMARY KEY (`user_id`, `class_id`),
-    CONSTRAINT FK_submissions_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-    CONSTRAINT FK_submissions_class_id FOREIGN KEY (`class_id`) REFERENCES `classes` (`id`)
-);
-
-CREATE TABLE `announcements`
-(
-    `id`         CHAR(26) PRIMARY KEY,
-    `course_id`  CHAR(26)     NOT NULL,
-    ..."
-2	0.020458	0.0098014	0.010229	0.0106566	0.00024	0	0.0000	isucholar	"CREATE TABLE `submissions`
-(
-    `user_id`   CHAR(26)     NOT NULL,
-    `class_id`  CHAR(26)     NOT NULL,
-    `file_name` VARCHAR(255) NOT NULL,
-    `score`     TINYINT UNSIGNED,
-    PRIMARY KEY (`user_id`, `class_id`),
-    CONSTRAINT FK_submissions_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-    CONSTRAINT FK_submissions_class_id FOREIGN KEY (`class_id`) REFERENCES `classes` (`id`)
-);
-
-CREATE TABLE `announcements`
-(
-    `id`         CHAR(26) PRIMARY KEY,
-    `course_id`  CHAR(26)     NOT NULL,
-    `title`      VARCHAR(255) NOT NULL,
-    `message`    TEXT         NOT NULL,
-    CONSTRAINT FK_announcements_course_id FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`)
-);
-
-CREATE TABLE `unread_announcements`
-(
-    `announcement_id` CHAR(26)   NOT NULL,
-    `user_id`         CHAR(26)   NOT NULL,
-    `is_deleted`      TINYINT(1) NOT NULL DEFAULT false,
-    PRIMARY KEY (`announcement_id`, `user_id`),
-    CONSTRAINT FK_unread_announcements_announcement_id FOREIGN KEY (`announcement_id`) REFERENCE..."
-1	0.0204363	0.0204363	0.0204363	0.0204363	0.000792	30	30.0000	sys	select * from statement_analysis limit 30
-2	0.0201659	0.0044694	0.01008295	0.0156965	0.000146	0	0.0000	isucholar	"DROP TABLE IF EXISTS `submissions`;
-DROP TABLE IF EXISTS `classes`;
-DROP TABLE IF EXISTS `registrations`;
-DROP TABLE IF EXISTS `courses`;
-DROP TABLE IF EXISTS `users`;
-
--- master data
-CREATE TABLE `users`
-(
-    `id`              CHAR(26) PRIMARY KEY,
-    `code`            CHAR(6) UNIQUE              NOT NULL,
-    `name`            VARCHAR(255)                NOT NULL,
-    `hashed_password` BINARY(60)                  NOT NULL,
-    `type`            ENUM ('student', 'teacher') NOT NULL
-);
-
-CREATE TABLE `courses`
-(
-    `id`          CHAR(26) PRIMARY KEY,
-    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
-    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
-    `name`        VARCHAR(255)                                                  NOT NULL,
-    `description` TEXT                                                          NOT NULL,
-    `credit`      TINYINT UNSIGNED                                              NOT NULL,
-    `period`..."
-59	0.017969	0.0002211	0.000304559	0.0005284	0.006241	150	2.5424	isucholar	SELECT `announcements`.`id`, `courses`.`id` AS `course_id`, `courses`.`name` AS `course_name`, `announcements`.`title`, NOT `unread_announcements`.`is_deleted` AS `unread` FROM `announcements` JOIN `courses` ON `announcements`.`course_id` = `courses`.`id` JOIN `registrations` ON `courses`.`id` = `registrations`.`course_id` JOIN `unread_announcements` ON `announcements`.`id` = `unread_announcements`.`announcement_id` WHERE 1=1 AND `announcements`.`course_id` = '01FG45VJ0S694AHPJV6DPJS7XF' AND `unread_announcements`.`user_id` = '01FF6J8XGXMV0GBCQXJ76D3NQH' AND `registrations`.`user_id` = '01FF6J8XGXMV0GBCQXJ76D3NQH' ORDER BY `announcements`.`id` DESC LIMIT 21 OFFSET 0
-302	0.0172565	2.71e-05	5.714e-05	0.0004466	0	0	0.0000	isucholar	SET time_zone='+00:00'
-2	0.0135186	0.0042526	0.0067593	0.009266	0.000131	0	0.0000	isucholar	"DROP TABLE IF EXISTS `registrations`;
-DROP TABLE IF EXISTS `courses`;
-DROP TABLE IF EXISTS `users`;
-
--- master data
-CREATE TABLE `users`
-(
-    `id`              CHAR(26) PRIMARY KEY,
-    `code`            CHAR(6) UNIQUE              NOT NULL,
-    `name`            VARCHAR(255)                NOT NULL,
-    `hashed_password` BINARY(60)                  NOT NULL,
-    `type`            ENUM ('student', 'teacher') NOT NULL
-);
-
-CREATE TABLE `courses`
-(
-    `id`          CHAR(26) PRIMARY KEY,
-    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
-    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
-    `name`        VARCHAR(255)                                                  NOT NULL,
-    `description` TEXT                                                          NOT NULL,
-    `credit`      TINYINT UNSIGNED                                              NOT NULL,
-    `period`      TINYINT UNSIGNED                                              ..."
-2	0.0102359	0.003328	0.00511795	0.0069079	0.000272	0	0.0000	isucholar	"DROP TABLE IF EXISTS `announcements`;
+30	0.0042426	0.0001226	0.00014142	0.0002243	0.001542	30	1.0000	isucholar	SELECT code, file_name FROM submissions JOIN users ON submissions.user_id = users.id WHERE class_id = '01FF4RXEKS0DG2EG20CWPQ60M3' AND user_id = '01FF4RXEKS0DG2EG20CN2GJB8K'
+2	0.0038712	0.0018155	0.0019356	0.0020557	0.000145	0	0.0000	isucholar	DROP TABLE IF EXISTS total_scores
+2	0.0038461	0.0016768	0.00192305	0.0021693	0.000178	0	0.0000	isucholar	DROP TABLE IF EXISTS user_scores
+2	0.0029414	0.0010936	0.0014707	0.0018478	0.000111	0	0.0000	isucholar	"DROP TABLE IF EXISTS `announcements`;
 DROP TABLE IF EXISTS `submissions`;
 DROP TABLE IF EXISTS `classes`;
 DROP TABLE IF EXISTS `registrations`;
@@ -297,9 +349,7 @@ CREATE TABLE `courses`
     `name`        VARCHAR(255)                                                  NOT NULL,
     `description` TEXT                                                          NOT NULL,
     `credit`      TINYINT UNSIGNED                              ..."
-3	0.0099252	0.0002101	0.0033084	0.0094963	0.000289	1267	422.3333	isucholar	SELECT class_id, COUNT(class_id) FROM submissions GROUP BY class_id
-2	0.0093473	0.0035134	0.00467365	0.0058339	0.000246	0	0.0000	isucholar	"DROP TABLE IF EXISTS `classes`;
-DROP TABLE IF EXISTS `registrations`;
+2	0.0027815	0.0008991	0.00139075	0.0018824	0.000121	0	0.0000	isucholar	"DROP TABLE IF EXISTS `registrations`;
 DROP TABLE IF EXISTS `courses`;
 DROP TABLE IF EXISTS `users`;
 
@@ -321,58 +371,33 @@ CREATE TABLE `courses`
     `name`        VARCHAR(255)                                                  NOT NULL,
     `description` TEXT                                                          NOT NULL,
     `credit`      TINYINT UNSIGNED                                              NOT NULL,
-    `period`      TINYINT UNSIGNED              ..."
-2	0.008394	0.0034602	0.004197	0.0049338	0.000175	0	0.0000	isucholar	"DROP TABLE IF EXISTS `users`;
-
--- master data
-CREATE TABLE `users`
-(
-    `id`              CHAR(26) PRIMARY KEY,
-    `code`            CHAR(6) UNIQUE              NOT NULL,
-    `name`            VARCHAR(255)                NOT NULL,
-    `hashed_password` BINARY(60)                  NOT NULL,
-    `type`            ENUM ('student', 'teacher') NOT NULL
-);
-
-CREATE TABLE `courses`
-(
-    `id`          CHAR(26) PRIMARY KEY,
-    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
-    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
-    `name`        VARCHAR(255)                                                  NOT NULL,
-    `description` TEXT                                                          NOT NULL,
-    `credit`      TINYINT UNSIGNED                                              NOT NULL,
-    `period`      TINYINT UNSIGNED                                              NOT NULL,
-    `day_of_week` ENUM ('monday', 'tuesday', 'wednesday', 't..."
-2	0.0079788	0.003389	0.0039894	0.0045898	0.000176	0	0.0000	isucholar	"DROP TABLE IF EXISTS `courses`;
-DROP TABLE IF EXISTS `users`;
-
--- master data
-CREATE TABLE `users`
-(
-    `id`              CHAR(26) PRIMARY KEY,
-    `code`            CHAR(6) UNIQUE              NOT NULL,
-    `name`            VARCHAR(255)                NOT NULL,
-    `hashed_password` BINARY(60)                  NOT NULL,
-    `type`            ENUM ('student', 'teacher') NOT NULL
-);
-
-CREATE TABLE `courses`
-(
-    `id`          CHAR(26) PRIMARY KEY,
-    `code`        VARCHAR(255) UNIQUE                                           NOT NULL,
-    `type`        ENUM ('liberal-arts', 'major-subjects')                       NOT NULL,
-    `name`        VARCHAR(255)                                                  NOT NULL,
-    `description` TEXT                                                          NOT NULL,
-    `credit`      TINYINT UNSIGNED                                              NOT NULL,
-    `period`      TINYINT UNSIGNED                                              NOT NULL,
-    `day_of_week` ENUM ('mon..."
-2	0.0047283	0.0022798	0.00236415	0.0024485	0.001565	202	101.0000	sys	show tables
-2	0.002852	0.0013429	0.001426	0.0015091	0.000674	0	0.0000	isucholar	"INSERT INTO `courses` (`id`, `code`, `type`, `name`, `description`, `credit`, `period`, `day_of_week`, `teacher_id`, `keywords`, `status`) VALUES
+    `period`      TINYINT UNSIGNED                                              ..."
+2	0.00228	0.0011269	0.00114	0.0011531	0.000633	0	0.0000	isucholar	"INSERT INTO `courses` (`id`, `code`, `type`, `name`, `description`, `credit`, `period`, `day_of_week`, `teacher_id`, `keywords`, `status`) VALUES
 ('01FF6N3NA2J712CAH9X8SRRK8R', 'A0001', 'liberal-arts', '社会モデリング導入', '本講義では課題提出をもって出席の代わりとする。成績は出席と課題の提出状況により判断する。', 2, 1, 'monday', '01FF6J8XFSWM3X28NM0WXZQ8QK', '社会 モデリング', 'closed'),
 ('01FF6N3NA2J712CAH9XAC2BG5E', 'A0002', 'major-subjects', '言語システム演習', '本講義では出席をランダムな講義回で取る。成績は出席と課題の提出状況により判断する。', 2, 2, 'monday', '01FF6J8XFSCAT6ADYNN5G33QQC', '言語 システム', 'closed'),
 ('01FF6N3NA2J712CAH9XB3WZX2D', 'A0003', 'major-subjects', '先進マネジメント化学導入', '本講義では出席をランダムな講義回で取る。成績は課題の提出状況により判断する。', 3, 3, 'monday', '01FF6J8XFSRFYE6GGAB4Y3F94P', 'マネ..."
-2	0.0014957	0.000746	0.00074785	0.0007497	0.000202	0	0.0000	isucholar	"INSERT INTO `unread_announcements` VALUES
+2	0.0011312	0.0005547	0.0005656	0.0005765	0.000204	0	0.0000	isucholar	"INSERT INTO `submissions` VALUES
+('01FF4RXEKS0DG2EG20CN2GJB8K','01FF4RXEKS0DG2EG20CWPQ60M3','S99999_1st.pdf',72),
+('01FF4RXEKS0DG2EG20CN2GJB8K','01FF4RXEKS0DG2EG20CYAYCCGM','S99999_2nd.pdf',65),
+('01FF4RXEKS0DG2EG20CN2GJB8K','01FF4RXEKS0DG2EG20D23EQZRY','S99999_3rd.pdf',88),
+('01FF4RXEKS0DG2EG20CN2GJB8K','01FF4RXEKS0DG2EG20D4APKY18','S99999_4th.pdf',54),
+('01FF4RXEKS0DG2EG20CN2GJB8K','01FF4RXEKS0DG2EG20D61YCEM1','S99999_5th.pdf',60),
+('01FF4RXEKS0DG2EG20CQVX6FV0','01FF4RXEKS0DG2EG20CWPQ60M3','S99998_1st.pdf',12),
+('01FF4RXEKS0DG2EG20CQVX6FV0','01FF4RXEKS0DG2EG20CYAYCCGM','S99998_2nd.pdf',8),
+('01FF4RXEKS0DG2EG20CQVX6FV0','01FF4RXEKS0DG2EG20D23EQZRY','S99998_3rd.pdf',26),
+('01FF4RXEKS0DG2EG20CQVX6FV0','01FF4RXEKS0DG2EG20D4APKY18','S99998_4th.pdf',33),
+('01FF4RXEKS0DG2EG20CQVX6FV0','01FF4RXEKS0DG2EG20D61YCEM1','S99998_5th.pdf',16),
+('01FF4RXEKS0DG2EG20CTTAPEVH','01FF4RXEKS0DG2EG20CWPQ60M3','S99997_1st.pdf',90),
+('01FF4RXEKS0DG2EG20CTTAPEVH','01FF4RXEKS0DG2EG20CYAYCCGM','S99997_2nd.pdf',82),
+('01FF4RXEKS0DG2E..."
+2	0.001055	0.0005146	0.0005275	0.0005404	0.000172	0	0.0000	isucholar	"INSERT INTO `classes` VALUES
+('01FF4RXEKS0DG2EG20CWPQ60M3','01FF4RXEKS0DG2EG20CWPQ60M3',1,'ISUCON3 予選','本日はISUCON3 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。',0),
+('01FF4RXEKS0DG2EG20CYAYCCGM','01FF4RXEKS0DG2EG20CWPQ60M3',2,'ISUCON4 予選','本日はISUCON4 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。',0),
+('01FF4RXEKS0DG2EG20D23EQZRY','01FF4RXEKS0DG2EG20CWPQ60M3',3,'ISUCON5 予選','本日はISUCON5 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。',0),
+('01FF4RXEKS0DG2EG20D4APKY18','01FF4RXEKS0DG2EG20CWPQ60M3',4,'ISUCON6 予選','本日はISUCON6 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。',0),
+('01FF4RXEKS0DG2EG20D61YCEM1','01FF4RXEKS0DG2EG20CWPQ60M3',5,'ISUCON7 予選','本日はISUC..."
+3	0.0010324	0.0002385	0.000344133	0.0004408	0.000341	52	17.3333	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 AND `courses`.`status` = 'closed' ORDER BY `courses`.`code` LIMIT 21 OFFSET 0
+2	0.0009874	0.0004539	0.0004937	0.0005335	0.000159	0	0.0000	isucholar	"INSERT INTO `unread_announcements` VALUES
 ('01FF4RXEKS0DG2EG20D6N5CNRQ','01FF4RXEKS0DG2EG20CN2GJB8K',true),
 ('01FF4RXEKS0DG2EG20DA1W34X3','01FF4RXEKS0DG2EG20CN2GJB8K',true),
 ('01FF4RXEKS0DG2EG20DAGTWP61','01FF4RXEKS0DG2EG20CN2GJB8K',true),
@@ -388,33 +413,12 @@ CREATE TABLE `courses`
 ('01FF4RXEKS0DG2EG20DAGTWP61','01FF4RXEKS0DG2EG20CTTAPEVH',true),
 ('01FF4RXEKS0DG2EG20DBT4PFHF','01FF4RXEKS0DG2EG20CTTAPEVH',true),
 ('01FF4RXEKS0DG2EG20DDPCS14P','01FF4RXEKS0DG2EG20CTTAP..."
-2	0.0014003	0.0006664	0.00070015	0.0007339	0.000215	0	0.0000	isucholar	"INSERT INTO `submissions` VALUES
-('01FF4RXEKS0DG2EG20CN2GJB8K','01FF4RXEKS0DG2EG20CWPQ60M3','S99999_1st.pdf',72),
-('01FF4RXEKS0DG2EG20CN2GJB8K','01FF4RXEKS0DG2EG20CYAYCCGM','S99999_2nd.pdf',65),
-('01FF4RXEKS0DG2EG20CN2GJB8K','01FF4RXEKS0DG2EG20D23EQZRY','S99999_3rd.pdf',88),
-('01FF4RXEKS0DG2EG20CN2GJB8K','01FF4RXEKS0DG2EG20D4APKY18','S99999_4th.pdf',54),
-('01FF4RXEKS0DG2EG20CN2GJB8K','01FF4RXEKS0DG2EG20D61YCEM1','S99999_5th.pdf',60),
-('01FF4RXEKS0DG2EG20CQVX6FV0','01FF4RXEKS0DG2EG20CWPQ60M3','S99998_1st.pdf',12),
-('01FF4RXEKS0DG2EG20CQVX6FV0','01FF4RXEKS0DG2EG20CYAYCCGM','S99998_2nd.pdf',8),
-('01FF4RXEKS0DG2EG20CQVX6FV0','01FF4RXEKS0DG2EG20D23EQZRY','S99998_3rd.pdf',26),
-('01FF4RXEKS0DG2EG20CQVX6FV0','01FF4RXEKS0DG2EG20D4APKY18','S99998_4th.pdf',33),
-('01FF4RXEKS0DG2EG20CQVX6FV0','01FF4RXEKS0DG2EG20D61YCEM1','S99998_5th.pdf',16),
-('01FF4RXEKS0DG2EG20CTTAPEVH','01FF4RXEKS0DG2EG20CWPQ60M3','S99997_1st.pdf',90),
-('01FF4RXEKS0DG2EG20CTTAPEVH','01FF4RXEKS0DG2EG20CYAYCCGM','S99997_2nd.pdf',82),
-('01FF4RXEKS0DG2E..."
-2	0.0013503	0.000482	0.00067515	0.0008683	0	0	0.0000	isucholar	show processlist
-2	0.0012357	0.0005811	0.00061785	0.0006546	0.000204	0	0.0000	isucholar	"INSERT INTO `classes` VALUES
-('01FF4RXEKS0DG2EG20CWPQ60M3','01FF4RXEKS0DG2EG20CWPQ60M3',1,'ISUCON3 予選','本日はISUCON3 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。',0),
-('01FF4RXEKS0DG2EG20CYAYCCGM','01FF4RXEKS0DG2EG20CWPQ60M3',2,'ISUCON4 予選','本日はISUCON4 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。',0),
-('01FF4RXEKS0DG2EG20D23EQZRY','01FF4RXEKS0DG2EG20CWPQ60M3',3,'ISUCON5 予選','本日はISUCON5 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。',0),
-('01FF4RXEKS0DG2EG20D4APKY18','01FF4RXEKS0DG2EG20CWPQ60M3',4,'ISUCON6 予選','本日はISUCON6 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。',0),
-('01FF4RXEKS0DG2EG20D61YCEM1','01FF4RXEKS0DG2EG20CWPQ60M3',5,'ISUCON7 予選','本日はISUC..."
-2	0.0011579	0.0005557	0.00057895	0.0006022	0.000199	0	0.0000	isucholar	"INSERT INTO `announcements` VALUES
+2	0.0009168	0.0004484	0.0004584	0.0004684	0.000175	0	0.0000	isucholar	"INSERT INTO `announcements` VALUES
 ('01FF4RXEKS0DG2EG20D6N5CNRQ','01FF4RXEKS0DG2EG20CWPQ60M3','講義追加: ISUCON3 予選','講義が新しく追加されました: ISUCON3 予選\n本日はISUCON3 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。'),
 ('01FF4RXEKS0DG2EG20DA1W34X3','01FF4RXEKS0DG2EG20CWPQ60M3','講義追加: ISUCON4 予選','講義が新しく追加されました: ISUCON4 予選\n本日はISUCON4 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。'),
 ('01FF4RXEKS0DG2EG20DAGTWP61','01FF4RXEKS0DG2EG20CWPQ60M3','講義追加: ISUCON5 予選','講義が新しく追加されました: ISUCON5 予選\n本日はISUCON5 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。'),
 ('01FF4RXEKS0DG2EG20DBT4PFHF','01FF4RXEKS0DG2EG20CWPQ60M3','講義追加: ISUCON6 予選','講義が新..."
-2	0.0010856	0.0005169	0.0005428	0.0005687	0.000156	0	0.0000	isucholar	"INSERT INTO `registrations` VALUES
+2	0.0008725	0.0004346	0.00043625	0.0004379	0.000171	0	0.0000	isucholar	"INSERT INTO `registrations` VALUES
 ('01FF4RXEKS0DG2EG20CWPQ60M3','01FF4RXEKS0DG2EG20CN2GJB8K'),
 ('01FF4RXEKS0DG2EG20CWPQ60M3','01FF4RXEKS0DG2EG20CQVX6FV0'),
 ('01FF4RXEKS0DG2EG20CWPQ60M3','01FF4RXEKS0DG2EG20CTTAPEVH'),
@@ -425,17 +429,16 @@ INSERT INTO `classes` VALUES
 ('01FF4RXEKS0DG2EG20CYAYCCGM','01FF4RXEKS0DG2EG20CWPQ60M3',2,'ISUCON4 予選','本日はISUCON4 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。',0),
 ('01FF4RXEKS0DG2EG20D23EQZRY','01FF4RXEKS0DG2EG20CWPQ60M3',3,'ISUCON5 予選','本日はISUCON5 予選の過去問を実施します。課題は講義中に出題するクイズへの回答を提出してください。',0),
 ('01FF4RXEKS0DG2EG20D4APKY18','01FF4R..."
-16	0.0009242	4.22e-05	5.7762e-05	7.42e-05	0	0	0.0000	isucholar	ROLLBACK
-3	0.0008073	0.0002608	0.0002691	0.0002768	0.000193	52	17.3333	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 AND `courses`.`status` = 'closed' ORDER BY `courses`.`code` LIMIT 21 OFFSET 0
-1	0.0006405	0.0006405	0.0006405	0.0006405	0.000257	5	5.0000	sys	show databases
-1	0.0002481	0.0002481	0.0002481	0.0002481	9.3e-05	1	1.0000	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 AND `courses`.`type` = 'major-subjects' AND `courses`.`credit` = 1 AND `users`.`name` = 'isucon-teacher' AND `courses`.`period` = 1 AND `courses`.`day_of_week` = 'tuesday' AND ((1=1 AND `courses`.`name` LIKE '%ISUCON%') OR (1=1 AND `courses`.`keywords` LIKE '%ISUCON%')) AND `courses`.`status` = 'in-progress' ORDER BY `courses`.`code` LIMIT 21 OFFSET 0
-2	0.0002389	0.000111	0.00011945	0.0001279	9.4e-05	0	0.0000	isucholar	"INSERT INTO `courses` VALUES
+3	0.0007938	0.0002185	0.0002646	0.0003362	0.000226	115	38.3333	isucholar	SELECT class_id, COUNT(class_id) FROM submissions GROUP BY class_id
+14	0.0007733	3.46e-05	5.5235e-05	0.0001021	0	0	0.0000	isucholar	ROLLBACK
+2	0.0003583	0.0001657	0.00017915	0.0001926	7.2e-05	0	0.0000	isucholar	DELETE FROM unread_announcements WHERE is_deleted
+1	0.0002706	0.0002706	0.0002706	0.0002706	9.8e-05	1	1.0000	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 AND `courses`.`type` = 'major-subjects' AND `courses`.`credit` = 3 AND `users`.`name` = '藍田 悠太' AND `courses`.`period` = 3 AND `courses`.`day_of_week` = 'wednesday' AND ((1=1 AND `courses`.`name` LIKE '%アルゴリズム%') OR (1=1 AND `courses`.`keywords` LIKE '%アルゴリズム%')) AND `courses`.`status` = 'closed' ORDER BY `courses`.`code` LIMIT 21 OFFSET 0
+1	0.0002269	0.0002269	0.0002269	0.0002269	7.5e-05	12	12.0000	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 AND `courses`.`credit` = 1 ORDER BY `courses`.`code` LIMIT 21 OFFSET 0
+1	0.0002003	0.0002003	0.0002003	0.0002003	5.9e-05	8	8.0000	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 AND `courses`.`period` = 1 ORDER BY `courses`.`code` LIMIT 21 OFFSET 0
+2	0.0001943	9.22e-05	9.715e-05	0.0001021	8.8e-05	0	0.0000	isucholar	"INSERT INTO `courses` VALUES
 ('01FF4RXEKS0DG2EG20CWPQ60M3','X0001','major-subjects','ISUCON演習第一','この科目ではISUCONの過去問を通してサーバのチューニングアップを学びます。課題は講義中に出題するクイズへの回答を提出してください。本講義の成績は課題の提出状況により判断します。',1,1,'monday','01FF4RXEKS0DG2EG20CKDWS7CC','ISUCON SpeedUP','in-progress'),
 ('01FF4RXEKS0DG2EG20CYAYCCGM','X0002','major-subjects','ISUCON演習第二','この科目ではISUCONの過去問を通してサーバのチューニングアップを学びます。課題は講義中に出題するクイズへの回答を提出してください。本講義の成績は課題の提出状況により判断します。',1,1,'tuesday','01FF4RXEKS0DG2EG20CKDWS7CC','ISUCON SpeedUP','in-progress'),
 ('01FF4RXEKS0DG2EG20D23EQZRY','X0003','major-subjects','ISUCON演習第三','この科目ではISUCONの過去問を通してサーバのチューニングアッ..."
-1	0.0002368	0.0002368	0.0002368	0.0002368	6.7e-05	12	12.0000	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 AND `courses`.`credit` = 1 ORDER BY `courses`.`code` LIMIT 21 OFFSET 0
-1	0.0002258	0.0002258	0.0002258	0.0002258	6.5e-05	7	7.0000	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 AND `courses`.`day_of_week` = 'monday' ORDER BY `courses`.`code` LIMIT 21 OFFSET 0
-1	0.0002009	0.0002009	0.0002009	0.0002009	5.9e-05	8	8.0000	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 AND `courses`.`period` = 1 ORDER BY `courses`.`code` LIMIT 21 OFFSET 0
-1	0.000134	0.000134	0.000134	0.000134	5.2e-05	1	1.0000	isucholar	SELECT * FROM `courses` WHERE `code` = 'M0029'
-1	0.0001315	0.0001315	0.0001315	0.0001315	5e-05	1	1.0000	isucholar	SELECT * FROM `classes` WHERE `course_id` = '01FG45VJA8SMMCA0XP4SSV146Z' AND `part` = 1
-1	0.0001048	0.0001048	0.0001048	0.0001048	0	1	1.0000	isucholar	SELECT DATABASE()
+1	0.0001912	0.0001912	0.0001912	0.0001912	5.3e-05	7	7.0000	isucholar	SELECT `courses`.*, `users`.`name` AS `teacher` FROM `courses` JOIN `users` ON `courses`.`teacher_id` = `users`.`id` WHERE 1=1 AND `courses`.`day_of_week` = 'monday' ORDER BY `courses`.`code` LIMIT 21 OFFSET 0
+1	0.0001175	0.0001175	0.0001175	0.0001175	4e-05	1	1.0000	isucholar	SELECT * FROM `classes` WHERE `course_id` = '01FGBP854A7YN16YR71K1WZZE5' AND `part` = 1
+1	0.0001128	0.0001128	0.0001128	0.0001128	3.9e-05	1	1.0000	isucholar	SELECT * FROM `courses` WHERE `code` = 'L0013'

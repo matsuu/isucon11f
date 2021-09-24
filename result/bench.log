@@ -1,55 +1,58 @@
-21:38:54.794919 ===> PREPARE
-21:38:54.794954 start Initialize
-21:38:56.932145 ===> LOAD
-21:38:59.932206 score: 7599 (= 7599 - 0) : passed
-21:38:59.932251 deductionCount: 0, timeoutCount: 0
-21:39:02.933143 score: 15851 (= 15851 - 0) : passed
-21:39:02.933182 deductionCount: 0, timeoutCount: 0
-21:39:05.932253 score: 22155 (= 22155 - 0) : passed
-21:39:05.932282 deductionCount: 0, timeoutCount: 0
-21:39:08.932304 score: 30362 (= 30362 - 0) : passed
-21:39:08.932361 deductionCount: 0, timeoutCount: 0
-21:39:11.932244 score: 37260 (= 37260 - 0) : passed
-21:39:11.932261 deductionCount: 0, timeoutCount: 0
-21:39:14.935680 score: 42951 (= 42951 - 0) : passed
-21:39:14.935720 deductionCount: 0, timeoutCount: 0
-21:39:17.994513 score: 48694 (= 48694 - 0) : passed
-21:39:17.994566 deductionCount: 0, timeoutCount: 0
-21:39:20.932331 score: 56315 (= 56315 - 0) : passed
-21:39:20.932340 deductionCount: 0, timeoutCount: 0
-21:39:23.932420 score: 64054 (= 64054 - 0) : passed
-21:39:23.932428 deductionCount: 0, timeoutCount: 0
-21:39:26.932225 score: 70089 (= 70089 - 0) : passed
-21:39:26.932236 deductionCount: 0, timeoutCount: 0
-21:39:29.932398 score: 75856 (= 75856 - 0) : passed
-21:39:29.932457 deductionCount: 0, timeoutCount: 0
-21:39:32.932202 score: 80766 (= 80766 - 0) : passed
-21:39:32.932235 deductionCount: 0, timeoutCount: 0
-21:39:35.932272 score: 85798 (= 85798 - 0) : passed
-21:39:35.932321 deductionCount: 0, timeoutCount: 0
-21:39:38.933131 score: 91308 (= 91308 - 0) : passed
-21:39:38.935724 deductionCount: 0, timeoutCount: 0
-21:39:41.932970 score: 97469 (= 97469 - 0) : passed
-21:39:41.933023 deductionCount: 0, timeoutCount: 0
-21:39:44.932871 score: 103413 (= 103413 - 0) : passed
-21:39:44.932922 deductionCount: 0, timeoutCount: 0
-21:39:47.932226 score: 108496 (= 108496 - 0) : passed
-21:39:47.932235 deductionCount: 0, timeoutCount: 0
-21:39:50.932540 score: 113396 (= 113396 - 0) : passed
-21:39:50.932548 deductionCount: 0, timeoutCount: 0
-21:39:53.942680 score: 118171 (= 118171 - 0) : passed
-21:39:53.942873 deductionCount: 0, timeoutCount: 0
-21:39:56.936655 score: 122524 (= 122524 - 0) : passed
-21:39:56.936737 deductionCount: 0, timeoutCount: 0
-21:39:59.933602 score: 122876 (= 122876 - 0) : passed
-21:39:59.933709 deductionCount: 0, timeoutCount: 0
-21:40:02.933579 score: 122876 (= 122876 - 0) : passed
-21:40:02.933685 deductionCount: 0, timeoutCount: 0
-21:40:05.934037 score: 122876 (= 122876 - 0) : passed
-21:40:05.934066 deductionCount: 0, timeoutCount: 0
-21:40:06.933651 ===> VALIDATION
-21:40:17.436173 score: 122876 (= 122876 - 0) : passed
-21:40:17.436192 deductionCount: 0, timeoutCount: 0
-21:40:17.436193 raw score (122876) breakdown:
-21:40:17.436197 SubmitAssignment    : 35771 回 (107313 点)
-21:40:17.436198 GetAnnouncementList : 15563 回 (15563 点)
+19:40:06.165972 ===> PREPARE
+19:40:06.166002 start Initialize
+19:40:07.625146 ===> LOAD
+19:40:10.626239 score: 8312 (= 8312 - 0) : passed
+19:40:10.626474 deductionCount: 0, timeoutCount: 0
+19:40:13.625428 score: 17005 (= 17005 - 0) : passed
+19:40:13.625460 deductionCount: 0, timeoutCount: 0
+19:40:16.625195 score: 24279 (= 24279 - 0) : passed
+19:40:16.625247 deductionCount: 0, timeoutCount: 0
+19:40:19.625857 score: 33302 (= 33302 - 0) : passed
+19:40:19.625910 deductionCount: 0, timeoutCount: 0
+19:40:22.625585 score: 40789 (= 40789 - 0) : passed
+19:40:22.625603 deductionCount: 0, timeoutCount: 0
+19:40:25.638506 score: 46938 (= 46938 - 0) : passed
+19:40:25.638514 deductionCount: 0, timeoutCount: 0
+19:40:28.625637 score: 54026 (= 54026 - 0) : passed
+19:40:28.625672 deductionCount: 0, timeoutCount: 0
+19:40:31.626059 score: 61776 (= 61776 - 0) : passed
+19:40:31.626101 deductionCount: 0, timeoutCount: 0
+19:40:34.625260 score: 69118 (= 69118 - 0) : passed
+19:40:34.625298 deductionCount: 0, timeoutCount: 0
+19:40:37.626214 score: 74531 (= 74531 - 0) : passed
+19:40:37.626262 deductionCount: 0, timeoutCount: 0
+19:40:40.626758 score: 80033 (= 80033 - 0) : passed
+19:40:40.626801 deductionCount: 0, timeoutCount: 0
+19:40:43.625614 score: 85290 (= 85290 - 0) : passed
+19:40:43.625669 deductionCount: 0, timeoutCount: 0
+19:40:46.625231 score: 90536 (= 90536 - 0) : passed
+19:40:46.633607 deductionCount: 0, timeoutCount: 0
+19:40:47.625288 1人の学生が成績取得(GET /api/users/me/grades)でタイムアウトしました。それぞれの学生は10秒後にリトライを試み、その後履修登録を再開します。
+19:40:49.625672 score: 95686 (= 95686 - 0) : passed
+19:40:49.625842 deductionCount: 0, timeoutCount: 26
+19:40:52.627025 score: 101397 (= 101397 - 0) : passed
+19:40:52.627170 deductionCount: 0, timeoutCount: 51
+19:40:52.687487 50人の学生が成績取得(GET /api/users/me/grades)でタイムアウトしました。それぞれの学生は10秒後にリトライを試み、その後履修登録を再開します。
+19:40:55.628193 score: 107596 (= 107596 - 0) : passed
+19:40:55.628572 deductionCount: 0, timeoutCount: 51
+19:40:58.628141 score: 113235 (= 113235 - 0) : passed
+19:40:58.628182 deductionCount: 0, timeoutCount: 51
+19:41:01.626368 score: 117440 (= 117440 - 0) : passed
+19:41:01.626390 deductionCount: 0, timeoutCount: 54
+19:41:02.635429 4人の学生が成績取得(GET /api/users/me/grades)でタイムアウトしました。それぞれの学生は10秒後にリトライを試み、その後履修登録を再開します。
+19:41:04.630526 score: 121789 (= 121789 - 0) : passed
+19:41:04.630740 deductionCount: 0, timeoutCount: 77
+19:41:07.658914 score: 125592 (= 125692 - 100) : passed
+19:41:07.659044 deductionCount: 0, timeoutCount: 105
+19:41:10.627327 score: 126052 (= 126152 - 100) : passed
+19:41:10.627421 deductionCount: 0, timeoutCount: 105
+19:41:13.628757 score: 126052 (= 126152 - 100) : passed
+19:41:13.628874 deductionCount: 0, timeoutCount: 105
+19:41:16.628525 score: 126052 (= 126152 - 100) : passed
+19:41:16.628628 deductionCount: 0, timeoutCount: 105
+19:41:17.625953 ===> VALIDATION
+19:41:28.080240 score: 126052 (= 126152 - 100) : passed
+19:41:28.080263 deductionCount: 0, timeoutCount: 105
+19:41:28.080265 raw score (126152) breakdown:
+19:41:28.080269 SubmitAssignment    : 36086 回 (108258 点)
+19:41:28.080271 GetAnnouncementList : 17894 回 (17894 点)
